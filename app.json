@@ -1,0 +1,46 @@
+{
+    "expo": {
+        "name": "ddd",
+        "slug": "ddd",
+        "scheme": "ddd",
+        "version": "0.0.`",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "assetBundlePatterns": ["**/*"],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.akah.ddd"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.akah.ddd"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            ["@morrowdigital/watermelondb-expo-plugin", { "disableJsi": true }],
+            [
+                "expo-build-properties",
+                {
+                    "android": {
+                        "kotlinVersion": "1.6.10",
+                        "packagingOptions": {
+                            "pickFirst": ["**/libc++_shared.so"]
+                        }
+                    }
+                }
+            ],
+            "expo-router"
+        ]
+    }
+}
