@@ -45,7 +45,7 @@ export default function Tab() {
 };
 
 interface Props {
-    settings: Settings | null
+    settings: Settings | null;
 }
 
 const languages = [{
@@ -68,10 +68,10 @@ const languages = [{
 const themes = [{
     key: 'auto',
     value: 'auto',
-},{
+}, {
     key: 'dark',
     value: 'dark',
-},{
+}, {
     key: 'light',
     value: 'light',
 }];
@@ -199,5 +199,5 @@ const SettingsComponent = withObservables(['settings'], () => ({
             'haptic',
             'sound',
         ])
-        .pipe(map(records => (records.length > 0 ? records[0] : null)))
+        .pipe(map(records => (records.length > 0 ? records[0] : null))),
 }))(Component);

@@ -28,7 +28,31 @@ export class Settings extends Model {
     @writer
     public async updateSettings(newSetting: Partial<Settings>) {
         await this.update((setting: Settings) => {
-            setting = {...setting, ...newSetting} as Settings;
+            setting = { ...setting, ...newSetting } as Settings;
         });
     }
+}
+
+export type Gender = 'm' | 'n' | 'f';
+
+export class Words extends Model {
+    public static table = 'words';
+
+    @text('noun')
+    public noun!: string;
+
+    @text('gender')
+    public gender!: Gender;
+
+    @field('frequency')
+    public frequency!: number;
+
+    @field('seen')
+    public seen!: number;
+
+    @field('correct')
+    public correct!: number;
+
+    @field('favorite')
+    public favorite!: boolean;
 }

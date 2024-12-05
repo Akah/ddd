@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { appSchema, tableSchema } from '@nozbe/watermelondb';
 
 export type Table = 'settings';
@@ -15,6 +16,18 @@ export default appSchema({
                 { name: 'animations', type: 'boolean' },
                 { name: 'haptic', type: 'boolean' },
                 { name: 'sound', type: 'boolean' },
+            ],
+        }),
+        tableSchema({
+            name: 'words',
+            columns: [
+                { name: 'noun', type: 'string' },
+                { name: 'gender', type: 'string' },
+                { name: 'frequency', type: 'number' },
+                // optional
+                { name: 'favorite', type: 'boolean', isIndexed: true, isOptional: true },
+                { name: 'seen', type: 'number', isOptional: true },
+                { name: 'correct', type: 'number', isOptional: true },
             ],
         }),
     ],

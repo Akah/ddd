@@ -1,11 +1,17 @@
 import React from 'react';
 
-import { Text } from 'react-native';
+import { Favorites } from '../../components/WordsList';
 
-export default function Favorites() {
+export default function () {
+    const [ offset, setOffset ] = React.useState(0);
+
+    function incOffset(): void {
+        setOffset(offset + 20);
+    }
+
     return (
         <>
-            <Text>{'favorites'}</Text>
+            <Favorites offset={offset} setOffset={incOffset} />
         </>
     )
 };

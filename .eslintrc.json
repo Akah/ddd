@@ -6,7 +6,6 @@
     "universe",
     "universe/native",
     "universe/shared/typescript-analysis",
-    "plugin:prettier/recommended"
   ],
   "overrides": [
     {
