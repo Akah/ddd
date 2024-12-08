@@ -14,7 +14,7 @@ interface Props {
     setOffset: () => void;
 }
 
-type Article = 'der' | 'die' | 'das';
+export type Article = 'der' | 'die' | 'das';
 
 const lookup = new Map<Gender, Article>(Object.entries({
     'm': 'der',
@@ -22,7 +22,9 @@ const lookup = new Map<Gender, Article>(Object.entries({
     'n': 'das'
 }));
 
-function genderToArticle(gender: Gender): Article {
+
+// TODO:  move to Gender class
+export function genderToArticle(gender: Gender): Article {
     return lookup.get(gender) ?? 'der';
 }
 

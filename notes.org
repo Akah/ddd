@@ -1,0 +1,7 @@
+* Notes
+** TODOs
+*** TODO Remove unwanted words from list
+A - single letters
+AG - multiple capitals
+Aber
+

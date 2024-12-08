@@ -49,6 +49,7 @@ export interface ButtonProps extends React.PropsWithChildren {
     borderColor: ColorValue;
     style?: ViewStyle | Array<ViewStyle>;
     textStyles?: TextStyle;
+    buttonStyle?: ViewStyle | Array<ViewStyle>;
 }
 
 export const Button: React.FC<ButtonProps> = (props) => {
@@ -60,23 +61,24 @@ export const Button: React.FC<ButtonProps> = (props) => {
 
     return (
         <View style={props.style}>
-            <View style={pressed ? { marginTop: 4 } : { marginBottom: 2 }}>
-                <Pressable
-                    style={[
-                        styles.button,
-                        styles.border,
-                        pressed ? { borderBottomWidth: 2 } : undefined,
-                        props.position === undefined ? styles.rounded : undefined,
-                    ]}
-                    onPress={props.onPress}
-                    onPressIn={onPressIn}
-                    onPressOut={onPressOut}
-                >
-                    <Text style={[styles.text, props.textStyles]}>
-                        {props.children?.toString()}
-                    </Text>
-                </Pressable>
-            </View>
+            <View style={{ marginTop: pressed ? 4 : 2 }}>
+            <Pressable
+                style={[
+                    styles.button,
+                    styles.border,
+                    pressed ? { borderBottomWidth: 2 } : undefined,
+                    props.position === undefined ? styles.rounded : undefined,
+                    props.buttonStyle,
+                ]}
+                onPress={props.onPress}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+            >
+                <Text style={[styles.text, props.textStyles]}>
+                    {props.children?.toString()}
+                </Text>
+            </Pressable>
         </View>
+        </View >
     );
 };

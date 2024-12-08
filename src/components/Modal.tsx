@@ -1,12 +1,14 @@
 import React from 'react';
-import { Pressable, Modal as RNModal, StyleSheet } from 'react-native';
+import { View, ModalBaseProps, Pressable, Modal as RNModal, StyleSheet, useWindowDimensions } from 'react-native';
 
 import { Surface, SurfaceProps } from './Surface';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export interface ModalProps extends React.PropsWithChildren {
+export interface ModalProps extends React.PropsWithChildren<ModalBaseProps> {
     visible: boolean;
     onRequestClose?: (() => void) | (() => Promise<void>);
     surfaceProps?: SurfaceProps;
+    fullscreen?: boolean;
 }
 
 const style = StyleSheet.create({
@@ -20,14 +22,64 @@ const style = StyleSheet.create({
     surface: {
         backgroundColor: 'white',
     },
+    fullscreen: {
+        flex: 1,
+        borderBottomRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomWidth: 0,
+    }
 });
 
 export const Modal: React.FC<ModalProps> = (props: ModalProps) => {
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+
+    if (props.fullscreen) {
+        return (
+            <>
+                {/* <View>
+                    <RNModal transparent={true} visible={props.visible} key={'test'}>
+                        <Pressable onPress={props.onRequestClose} style={style.background}>
+                            <View style={{ height: 10, width: 10, backgroundColor: 'blue' }} />
+                        </Pressable>
+                    </RNModal>
+                </View> */}
+                <RNModal transparent={true} visible={props.visible} statusBarTranslucent={true}>
+                    <Pressable style={style.background} onPress={props.onRequestClose}>
+                        <Pressable>
+                            <Surface
+                                {...props.surfaceProps}
+                                style={[
+                                    style.surface,
+                                    style.fullscreen,
+                                    {
+                                        marginTop: insets.top,
+                                        paddingBottom: insets.bottom,
+                                        width: width
+                                    },
+                                    props.surfaceProps?.style,
+                                ]}
+                            >
+                                {props.children}
+                            </Surface>
+                        </Pressable>
+                    </Pressable>
+                </RNModal>
+            </>
+        );
+    }
+
     return (
         <RNModal transparent={true} visible={props.visible} >
             <Pressable style={style.background} onPress={props.onRequestClose}>
                 <Pressable>
-                    <Surface {...props.surfaceProps} style={[style.surface, props.surfaceProps?.style]}>
+                    <Surface
+                        {...props.surfaceProps}
+                        style={[
+                            style.surface,
+                            props.surfaceProps?.style,
+                        ]}
+                    >
                         {props.children}
                     </Surface>
                 </Pressable>
