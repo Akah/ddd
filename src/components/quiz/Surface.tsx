@@ -1,0 +1,92 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { Surface } from '../Surface';
+import { MoreButton } from './MoreButton';
+import { genderToArticle } from '../WordsList';
+import { Gender, Words } from '../../model/model';
+import { colors } from '../../constants';
+
+const style = StyleSheet.create({
+    main: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    text: {
+        color: 'grey',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    container: {
+        flexDirection: 'column',
+        width: '90%',
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    titleRow: {
+        marginBottom: 24,
+    },
+    notice: {
+        marginTop: 24,
+    },
+    bold: {
+        fontWeight: '900',
+    },
+    small: {
+        fontSize: 14,
+        fontStyle: 'italic',
+    },
+});
+
+interface Props {
+    revealed: boolean;
+    correct: boolean;
+    word: Partial<Words>;
+}
+
+export const QuizSurface: React.FC<Props> = (props: Props) => {
+    function borderColor() {
+        if (props.revealed) {
+            return props.correct ? colors.green.background : colors.red.background;
+        }
+        return 'lightgrey';
+    }
+
+    return (
+        <View style={style.main}>
+            <Surface style={[style.container]} borderColor={borderColor()}>
+                {props.revealed &&
+                    <View style={[style.row, style.titleRow]}>
+                        <Text style={[style.text, { fontSize: 20 }]}>{props.correct ? 'Correct' : 'Incorrect'} !</Text>
+                        <MoreButton />
+                    </View>
+                }
+                <View style={style.row}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
+                        <Text style={style.text}> {props.word.noun}</Text>
+                    </View>
+                    <MaterialIcons
+                        name={props.word.favorite ? 'favorite' : 'favorite-outline'}
+                        color={'grey'}
+                        size={24}
+                    />
+                </View>
+                {props.revealed && (
+                    <>
+                        <View style={style.notice}>
+                            <Text style={[style.text, style.small]}>Note:</Text>
+                            <Text style={[style.text, style.small]}>
+                                Words ending with <Text style={style.bold}>-keit</Text> are always <Text style={style.bold}>feminine</Text>.
+                            </Text>
+                        </View>
+                    </>
+                )}
+            </Surface>
+        </View>
+    );
+}

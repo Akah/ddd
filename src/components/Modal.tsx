@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ModalBaseProps, Pressable, Modal as RNModal, StyleSheet, useWindowDimensions } from 'react-native';
 
 import { Surface, SurfaceProps } from './Surface';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Portal } from '@gorhom/portal';
 
 export interface ModalProps extends React.PropsWithChildren<ModalBaseProps> {
@@ -42,25 +42,25 @@ export const Modal: React.FC<ModalProps> = (props: ModalProps) => {
     if (props.fullscreen) {
         return (
             <Portal>
-                    <Pressable style={style.background} onPress={props.onRequestClose}>
-                        <Pressable>
-                            <Surface
-                                {...props.surfaceProps}
-                                style={[
-                                    style.surface,
-                                    style.fullscreen,
-                                    {
-                                        marginTop: insets.top,
-                                        paddingBottom: insets.bottom,
-                                        width: width
-                                    },
-                                    props.surfaceProps?.style,
-                                ]}
-                            >
-                                {props.children}
-                            </Surface>
-                        </Pressable>
+                <Pressable style={style.background} onPress={props.onRequestClose}>
+                    <Pressable>
+                        <Surface
+                            {...props.surfaceProps}
+                            style={[
+                                style.surface,
+                                style.fullscreen,
+                                {
+                                    marginTop: insets.top,
+                                    paddingBottom: insets.bottom,
+                                    width: width
+                                },
+                                props.surfaceProps?.style,
+                            ]}
+                        >
+                            {props.children}
+                        </Surface>
                     </Pressable>
+                </Pressable>
             </Portal>
         );
     }
