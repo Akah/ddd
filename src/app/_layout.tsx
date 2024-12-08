@@ -1,3 +1,4 @@
+import { PortalProvider } from '@gorhom/portal';
 import { Stack } from 'expo-router';
 import React from 'react';
 
@@ -40,9 +41,11 @@ export default function PublicLayout() {
     useInit();
     return (
         <>
-            <Stack>
-                <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            </Stack>
+            <PortalProvider>
+                <Stack>
+                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+                </Stack>
+            </PortalProvider>
         </>
     );
 }

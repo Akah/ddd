@@ -3,6 +3,7 @@ import { View, ModalBaseProps, Pressable, Modal as RNModal, StyleSheet, useWindo
 
 import { Surface, SurfaceProps } from './Surface';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Portal } from '@gorhom/portal';
 
 export interface ModalProps extends React.PropsWithChildren<ModalBaseProps> {
     visible: boolean;
@@ -13,7 +14,7 @@ export interface ModalProps extends React.PropsWithChildren<ModalBaseProps> {
 
 const style = StyleSheet.create({
     background: {
-        top: 0, bottom:0, right: 0, left: 0,
+        top: 0, bottom: 0, right: 0, left: 0,
         position: 'absolute',
         backgroundColor: 'rgba(0,0,0,0.3)',
         justifyContent: 'center',
@@ -34,17 +35,13 @@ export const Modal: React.FC<ModalProps> = (props: ModalProps) => {
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
 
+    if (!props.visible) {
+        return null;
+    }
+
     if (props.fullscreen) {
         return (
-            <>
-                {/* <View>
-                    <RNModal transparent={true} visible={props.visible} key={'test'}>
-                        <Pressable onPress={props.onRequestClose} style={style.background}>
-                            <View style={{ height: 10, width: 10, backgroundColor: 'blue' }} />
-                        </Pressable>
-                    </RNModal>
-                </View> */}
-                <RNModal transparent={true} visible={props.visible} statusBarTranslucent={true}>
+            <Portal>
                     <Pressable style={style.background} onPress={props.onRequestClose}>
                         <Pressable>
                             <Surface
@@ -64,13 +61,12 @@ export const Modal: React.FC<ModalProps> = (props: ModalProps) => {
                             </Surface>
                         </Pressable>
                     </Pressable>
-                </RNModal>
-            </>
+            </Portal>
         );
     }
 
     return (
-        <RNModal transparent={true} visible={props.visible} >
+        <Portal>
             <Pressable style={style.background} onPress={props.onRequestClose}>
                 <Pressable>
                     <Surface
@@ -84,6 +80,6 @@ export const Modal: React.FC<ModalProps> = (props: ModalProps) => {
                     </Surface>
                 </Pressable>
             </Pressable>
-        </RNModal>
+        </Portal>
     );
 };

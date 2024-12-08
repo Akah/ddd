@@ -9,6 +9,7 @@ import { colors } from '../../constants';
 import { Surface } from '../../components/Surface';
 import { Article, genderToArticle } from '../../components/WordsList';
 import { Gender } from '../../model/model';
+import { PortalHost } from '@gorhom/portal';
 
 const style = StyleSheet.create({
     root: {
@@ -73,6 +74,9 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    icon: {
+        marginLeft: 32,
     }
 });
 
@@ -127,6 +131,7 @@ export default function Favorites() {
 
     return (
         <>
+            <PortalHost name="modal" />
             <View style={style.root}>
                 <Button onPress={() => setOpen(true)} color="white" borderColor="lightgrey" textStyles={{ color: 'grey' }}>start</Button>
                 <Modal animationType='slide' fullscreen={true} visible={open}>
@@ -141,7 +146,7 @@ export default function Favorites() {
                             {revealed &&
                                 <View style={[style.row, style.titleRow]}>
                                     <Text style={[style.text, { fontSize: 20 }]}>{correct ? 'Correct' : 'Incorrect'} !</Text>
-                                    <MaterialIcons name="more-horiz" size={24} color="grey" onPress={()=>setMore(true)} />
+                                    <MaterialIcons name="more-horiz" size={24} color="grey" onPress={() => setMore(true)} />
                                 </View>
                             }
                             <View style={style.row}>
@@ -175,19 +180,27 @@ export default function Favorites() {
                         >
                             continue
                         </Button> :
-                     <ButtonPanel
-                         actions={[
-                             onDer,
-                             onDie,
-                             onDas,
-                         ]}
-                     />
+                        <ButtonPanel
+                            actions={[
+                                onDer,
+                                onDie,
+                                onDas,
+                            ]}
+                        />
                     }
                 </Modal>
-                <Modal visible={more}>
+                <Modal visible={more} onRequestClose={() => setMore(false)}>
                     <View style={style.listItem}>
-                        <Text>Report mistake</Text>
-                        <MaterialIcons name="flag" size={24} color="grey"/>
+                        <Text style={style.text}>Report a problem</Text>
+                        <MaterialIcons style={style.icon} name="flag" size={24} color="grey" />
+                    </View>
+                    <View style={style.listItem}>
+                        <Text style={style.text}>Set favorite</Text>
+                        <MaterialIcons style={style.icon} name="favorite-outline" size={24} color="grey" />
+                    </View>
+                    <View style={style.listItem}>
+                        <Text style={style.text}>Share</Text>
+                        <MaterialIcons style={style.icon} name="share" size={24} color="grey" />
                     </View>
                 </Modal>
             </View >
