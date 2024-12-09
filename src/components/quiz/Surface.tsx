@@ -6,6 +6,8 @@ import { MoreButton } from './MoreButton';
 import { genderToArticle } from '../WordsList';
 import { Gender, Words } from '../../model/model';
 import { colors } from '../../constants';
+import { database } from '../../model/database';
+import { withObservables } from '@nozbe/watermelondb/react';
 
 const style = StyleSheet.create({
     main: {
@@ -45,15 +47,24 @@ const style = StyleSheet.create({
 interface Props {
     revealed: boolean;
     correct: boolean;
-    word: Partial<Words>;
+    word: Words;
 }
 
-export const QuizSurface: React.FC<Props> = (props: Props) => {
+const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
     function borderColor() {
         if (props.revealed) {
             return props.correct ? colors.green.background : colors.red.background;
         }
         return 'lightgrey';
+    }
+
+    // TODO: extract into global function
+    async function toggleFavorite(): Promise<void> {
+        await database.write(async () => {
+            await props.word.update(() => (
+                props.word.favorite = !props.word.favorite
+            ));
+        });
     }
 
     return (
@@ -74,6 +85,7 @@ export const QuizSurface: React.FC<Props> = (props: Props) => {
                         name={props.word.favorite ? 'favorite' : 'favorite-outline'}
                         color={'grey'}
                         size={24}
+                        onPress={toggleFavorite}
                     />
                 </View>
                 {props.revealed && (
@@ -90,3 +102,7 @@ export const QuizSurface: React.FC<Props> = (props: Props) => {
         </View>
     );
 }
+
+export const QuizSurface = withObservables(['word'], (props: Props) => ({
+    word: props.word.observe(),
+}))(QuizSurfaceComponent);

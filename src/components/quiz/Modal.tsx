@@ -4,9 +4,10 @@ import { Modal } from "../Modal";
 import { QuizBar } from "./Bar";
 import { QuizController } from "./Controller";
 import { QuizSurface } from "./Surface";
-import { Gender } from '../../model/model';
+import { Gender, Words } from '../../model/model';
 
 interface Props {
+    words: Array<Words> | null;
     open: boolean;
     onClose: () => void;
 }
@@ -16,24 +17,20 @@ function calculateProgress(position: number, total: number): number {
     return ((position / total) * 94) + 6;
 }
 
-const word = {
-    noun: 'Möglichkeit',
-    gender: 'f' as Gender,
-    favorite: false,
-}
-
 export const QuizModal: React.FC<Props> = (props: Props) => {
-    const position = 1;
     const total = 20;
-    const progress = calculateProgress(position, total);
     const [ revealed, setRevealed ] = React.useState(false);
     const [ answer, setAnswer ] = React.useState<Gender|null>(null);
+    const [ position, setPosition ] = React.useState(0);
+    const progress = calculateProgress(position + 1, total);
 
-    const correct = answer === word.gender;
+    const word = props.words?.[position];
+    const correct = answer === word?.gender;
 
     function onContinue(): void {
         setRevealed(false);
         setAnswer(null);
+        setPosition(position + 1);
     }
 
     function buildAction(gender: Gender): () => void {
