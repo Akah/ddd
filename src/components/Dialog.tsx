@@ -1,10 +1,11 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, View, Text, StyleSheet, ColorValue } from 'react-native';
 import { Modal, ModalProps } from './Modal';
 
 interface Action {
     label: string;
     callback: () => void;
+    color?: ColorValue;
 }
 
 interface DialogProps extends ModalProps {
@@ -19,10 +20,13 @@ const style = StyleSheet.create({
         maxWidth: 500,
     },
     title: {
+        color: 'grey',
+        fontWeight: 'bold',
         fontSize: 22,
         marginBottom: 16,
     },
     subtitle: {
+        color: 'grey',
         fontSize: 16,
         marginBottom: 16,
     },
@@ -41,7 +45,7 @@ const style = StyleSheet.create({
 function renderAction(action: Action, index: number): React.ReactNode {
     return (
         <Pressable onPress={action.callback} key={`dialog-action-${index}`}>
-            <Text style={style.action} >
+            <Text style={[style.action, {color: action.color ?? 'grey'}]}>
                 {action.label}
             </Text>
         </Pressable>
