@@ -73,7 +73,7 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                 {props.revealed &&
                     <View style={[style.row, style.titleRow]}>
                         <Text style={[style.text, { fontSize: 20 }]}>{props.correct ? 'Correct' : 'Incorrect'} !</Text>
-                        <MoreButton />
+                        <MoreButton word={props.word} />
                     </View>
                 }
                 <View style={style.row}>

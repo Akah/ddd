@@ -18,19 +18,31 @@ function calculateProgress(position: number, total: number): number {
 }
 
 export const QuizModal: React.FC<Props> = (props: Props) => {
-    const total = 20;
     const [ revealed, setRevealed ] = React.useState(false);
     const [ answer, setAnswer ] = React.useState<Gender|null>(null);
     const [ position, setPosition ] = React.useState(0);
-    const progress = calculateProgress(position + 1, total);
 
     const word = props.words?.[position];
+    const total = props.words?.length;
     const correct = answer === word?.gender;
+
+    if (word == null) {
+        return null;
+    }
+
+    const progress = calculateProgress(position, total!);
 
     function onContinue(): void {
         setRevealed(false);
         setAnswer(null);
         setPosition(position + 1);
+    }
+
+    function onClose(): void {
+        setRevealed(false);
+        setAnswer(null);
+        setPosition(0);
+        props.onClose();
     }
 
     function buildAction(gender: Gender): () => void {
@@ -46,7 +58,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
 
     return (
         <Modal visible={props.open} fullscreen={true}>
-            <QuizBar progress={progress} onBack={props.onClose} />
+            <QuizBar progress={progress} onBack={onClose} />
             <QuizSurface correct={correct} revealed={revealed} word={word} />
             <QuizController
                 correct={correct}

@@ -16,7 +16,7 @@ const style = StyleSheet.create({
     },
 });
 
-export default function Favorites() {
+export default function() {
     const [open, setOpen] = React.useState(false);
     const [ list, setList ] = React.useState<Array<Words>>([]);
 
