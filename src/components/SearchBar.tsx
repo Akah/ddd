@@ -14,6 +14,7 @@ const style = StyleSheet.create({
         borderColor: 'lightgrey',
         borderWidth: 2,
         flexDirection: 'row',
+        alignItems: 'center',
         paddingHorizontal: 8,
         paddingVertical: 4,
         backgroundColor: '#eee',
@@ -22,6 +23,7 @@ const style = StyleSheet.create({
     },
     input: {
         flexGrow: 1,
+        paddingLeft: 8,
     },
     close: {
         borderRadius: 999,
