@@ -8,6 +8,7 @@ import { Gender, Words } from '../../model/model';
 import { colors } from '../../constants';
 import { database } from '../../model/database';
 import { withObservables } from '@nozbe/watermelondb/react';
+import { endingToGenderString } from '../../app/_layout';
 
 const style = StyleSheet.create({
     main: {
@@ -67,6 +68,19 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
         });
     }
 
+    function getNotice(): React.ReactNode {
+        return props.revealed && props.word.ending != null && (
+            <>
+                <View style={style.notice}>
+                    <Text style={[style.text, style.small]}>Note:</Text>
+                    <Text style={[style.text, style.small]}>
+                        Words ending with <Text style={style.bold}>-{props.word.ending}</Text> are always <Text style={style.bold}>{endingToGenderString(props.word.ending)}</Text>.
+                    </Text>
+                </View>
+            </>
+        );
+    }
+
     return (
         <View style={style.main}>
             <Surface style={[style.container]} borderColor={borderColor()}>
@@ -79,7 +93,7 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                 <View style={style.row}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
-                        <Text style={style.text}> {props.word.noun}</Text>
+                        <Text style={style.text}>{' '}{props.word.noun}</Text>
                     </View>
                     <MaterialIcons
                         name={props.word.favorite ? 'favorite' : 'favorite-outline'}
@@ -88,16 +102,7 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                         onPress={toggleFavorite}
                     />
                 </View>
-                {props.revealed && (
-                    <>
-                        <View style={style.notice}>
-                            <Text style={[style.text, style.small]}>Note:</Text>
-                            <Text style={[style.text, style.small]}>
-                                Words ending with <Text style={style.bold}>-keit</Text> are always <Text style={style.bold}>feminine</Text>.
-                            </Text>
-                        </View>
-                    </>
-                )}
+                {getNotice()}
             </Surface>
         </View>
     );

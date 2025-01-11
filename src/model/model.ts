@@ -55,4 +55,7 @@ export class Words extends Model {
 
     @field('favorite')
     public favorite!: boolean;
+
+    @text('ending')
+    public ending!: string | null;
 }
