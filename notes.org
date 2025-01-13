@@ -5,3 +5,39 @@ A - single letters
 AG - multiple capitals
 Aber
 
+** Roadmap to v 1.0
+*** Additional [0/3]
+**** TODO [#A] Eslint
+**** TODO [#B] CI/CD Android
+**** TODO [#C] playstore page
+**** TODO [#B] f-droid page
+*** 0.2 Different quiz types [0/6]
+**** TODO set length 10 - infinity
+**** TODO add mistakes to end of quiz
+**** TODO Write scores to db
+**** TODO favourites only
+**** TODO common mistakes
+**** TODO time limited e.g. most correct in 1 min
+
+*** 0.3 Import/Export data [0/1]
+**** TODO json or compressed/encrypted json
+**** evnt. remote server backup (P)
+
+*** 0.4 Dark theme [0/1]
+**** TODO add dark theme + setting toggleable
+
+*** 0.5 Feedback + Sentry [0/3]
+**** TODO Sentry support
+**** TODO Cookiebanner for sentry usage
+**** TODO feedback button via sentry
+
+*** 0.6 Animations
+*** 0.7 Translations [0/5]
+**** TODO German
+**** TODO Russian
+**** TODO Chinese
+**** TODO French?
+**** TODO Rest: computer generated?
+*** 0.8 Dashboard [0/2]
+**** TODO habbit streak/history
+**** TODO accuracy
