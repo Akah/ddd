@@ -26,6 +26,24 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
     const total = props.words?.length;
     const correct = answer === word?.gender;
 
+    React.useEffect(
+        () => {
+            setRevealed(false);
+            setAnswer(null);
+            setPosition(0);
+        },
+        [ props.open ]
+    );
+
+    React.useEffect(
+        () => {
+            if (word == null) {
+                props.onClose();
+            }
+        },
+        [ word ]
+    );
+
     if (word == null) {
         return null;
     }

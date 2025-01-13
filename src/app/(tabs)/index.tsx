@@ -25,17 +25,22 @@ export default function() {
     // slider
     const [ wordsCount, setWordsCount ] = React.useState<number>(10);
 
+    const [ excludedIds, setExcludedIds ] = React.useState<Array<string>>([]);
+
     function setSlider(value: number): void {
         setWordsCount(value > 100 ? Infinity : value);
     }
 
     async function onOpen(): Promise<void> {
-        await getWords();
+        // await getWords();
+        await getContinuousWords();
         setOpen(true);
     }
 
     function onClose(): void {
         setOpen(false);
+        setList([]);
+        setExcludedIds([]);
     }
 
     async function getWords(): Promise<void> {
@@ -56,13 +61,21 @@ export default function() {
         setList(result);
     }
 
+    async function getContinuousWords(): Promise<void> {
+        const excludedIdsString = excludedIds.map((id) => `${id}`).join(',');
+        const result = await database.collections.get<Words>('words').query(
+            Q.unsafeSqlQuery(`select * from words where id NOT IN (${excludedIdsString}) LIMIT 1`)
+        );
+        setList(result);
+    }
+
     return (
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
                 <Button onPress={onOpen} color="white" borderColor="lightgrey" textStyles={{ color: 'grey' }}>start</Button>
                 <WordCount value={wordsCount} setValue={setSlider} />
-                <QuizModal open={open} onClose={onClose} words={list} />
+                { open && <QuizModal open={open} onClose={onClose} words={list} />}
             </View >
         </>
     )
