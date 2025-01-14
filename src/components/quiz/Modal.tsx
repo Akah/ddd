@@ -10,6 +10,8 @@ interface Props {
     words: Array<Words> | null;
     open: boolean;
     onClose: () => void;
+    onAnswer: () => void;
+    infinite: boolean;
 }
 
 function calculateProgress(position: number, total: number): number {
@@ -48,7 +50,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
         return null;
     }
 
-    const progress = calculateProgress(position, total!);
+    const progress = props.infinite ? -1 : calculateProgress(position, total!);
 
     function onContinue(): void {
         setRevealed(false);
@@ -67,6 +69,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
         return () => {
             setRevealed(true);
             setAnswer(gender);
+            props.onAnswer();
         };
     }
 

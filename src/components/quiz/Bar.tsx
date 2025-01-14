@@ -24,6 +24,9 @@ const style = StyleSheet.create({
         borderRadius: 16,
         backgroundColor: colors.green.background,
     },
+    infinite: {
+        backgroundColor: colors.gold.background,
+    }
 });
 
 interface Props {
@@ -55,7 +58,12 @@ export const QuizBar: React.FC<Props> = (props: Props) => {
                 onPress={onBackPress}
             />
             <View style={style.progress}>
-                <View style={[style.progressMain, { width: `${props.progress}%` }]} />
+                <View style={[
+                    style.progressMain,
+                    props.progress === -1 ?
+                        style.infinite :
+                        { width: `${props.progress}%` },
+                ]} />
             </View>
             <Dialog
                 title="Quit now?"

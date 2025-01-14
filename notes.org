@@ -11,8 +11,8 @@ Aber
 **** TODO [#B] CI/CD Android
 **** TODO [#C] playstore page
 **** TODO [#B] f-droid page
-*** 0.2 Different quiz types [0/6]
-**** TODO set length 10 - infinity
+*** 0.2 Different quiz types [1/6]
+**** DONE set length 10 - infinity
 **** TODO add mistakes to end of quiz
 **** TODO Write scores to db
 **** TODO favourites only

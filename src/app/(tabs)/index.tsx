@@ -1,7 +1,6 @@
-import Slider from '@react-native-community/slider';
 import { PortalHost } from '@gorhom/portal';
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Button } from '../../components/Button';
 import { QuizModal } from '../../components/quiz/Modal';
@@ -9,6 +8,7 @@ import { Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Q } from '@nozbe/watermelondb';
 import { WordCount } from '../../components/quiz/WordCount';
+import { Setting } from '../../components/Setting';
 
 const style = StyleSheet.create({
     root: {
@@ -22,31 +22,31 @@ const style = StyleSheet.create({
 export default function() {
     const [open, setOpen] = React.useState(false);
     const [ list, setList ] = React.useState<Array<Words>>([]);
-    // slider
     const [ wordsCount, setWordsCount ] = React.useState<number>(10);
-
-    const [ excludedIds, setExcludedIds ] = React.useState<Array<string>>([]);
+    const [ isRandom, setIsRandom ] = React.useState<boolean>(false);
 
     function setSlider(value: number): void {
         setWordsCount(value > 100 ? Infinity : value);
     }
 
     async function onOpen(): Promise<void> {
-        // await getWords();
-        await getContinuousWords();
+        if (wordsCount === Infinity) {
+            await getWords()
+        } else {
+            await getNextWord();
+        }
         setOpen(true);
     }
 
     function onClose(): void {
         setOpen(false);
         setList([]);
-        setExcludedIds([]);
     }
 
     async function getWords(): Promise<void> {
         let queryString = 'select * from words';
 
-        if (true /*isRandom*/) {
+        if (isRandom) {
             queryString += ' order by random()';
         }
 
@@ -61,12 +61,20 @@ export default function() {
         setList(result);
     }
 
-    async function getContinuousWords(): Promise<void> {
-        const excludedIdsString = excludedIds.map((id) => `${id}`).join(',');
+    async function getNextWord(): Promise<void> {
+        const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
+        let queryString = 'select * from words';
+        if (list.length > 0) {
+            queryString += ` where id NOT IN (${excludedIdsString})`;
+        }
+        if (isRandom) {
+            queryString += ' order by random()';
+        }
+        queryString += ' limit 1';
         const result = await database.collections.get<Words>('words').query(
-            Q.unsafeSqlQuery(`select * from words where id NOT IN (${excludedIdsString}) LIMIT 1`)
+            Q.unsafeSqlQuery(queryString)
         );
-        setList(result);
+        setList([...list, ...result]);
     }
 
     return (
@@ -75,7 +83,18 @@ export default function() {
             <View style={style.root}>
                 <Button onPress={onOpen} color="white" borderColor="lightgrey" textStyles={{ color: 'grey' }}>start</Button>
                 <WordCount value={wordsCount} setValue={setSlider} />
-                { open && <QuizModal open={open} onClose={onClose} words={list} />}
+                <Setting.Surface>
+                    <Setting.Boolean label="Random words" value={isRandom} set={async (value: boolean) => setIsRandom(value)} />
+                </Setting.Surface>
+                {open &&
+                 <QuizModal
+                     open={open}
+                     onClose={onClose}
+                     onAnswer={getNextWord}
+                     words={list}
+                     infinite={wordsCount === Infinity}
+                 />
+                }
             </View >
         </>
     )
