@@ -1,5 +1,5 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { router } from 'expo-router';
+import { router, useRootNavigationState } from 'expo-router';
 import React from 'react';
 import {
     StyleSheet,
@@ -33,18 +33,27 @@ const style = StyleSheet.create({
 export const SearchBar: React.FC = () => {
     const [value, setValue] = React.useState('');
     const [debounced, setDebounced] = useDebounceValue('', 300);
+    const rootNavigationState = useRootNavigationState();
 
     function reset(): void {
         setValue('');
     }
 
-    React.useEffect(() => {
-        setDebounced(value);
-    }, [value]);
+    React.useEffect(
+        () => {
+            setDebounced(value);
+        },
+        [value]
+    );
 
-    React.useEffect(() => {
-        router.setParams({ search: debounced });
-    }, [debounced]);
+    React.useEffect(
+        () => {
+            if (rootNavigationState) {
+                router.setParams({ search: debounced });
+            }
+        },
+        [debounced]
+    );
 
     return (
         <View style={style.root}>
