@@ -31,9 +31,9 @@ export default function() {
 
     async function onOpen(): Promise<void> {
         if (wordsCount === Infinity) {
-            await getWords()
-        } else {
             await getNextWord();
+        } else {
+            await getWords()
         }
         setOpen(true);
     }
@@ -77,6 +77,17 @@ export default function() {
         setList([...list, ...result]);
     }
 
+    async function onAnswer(correct: boolean, current: Words): Promise<void> {
+        if (wordsCount === Infinity) {
+            await getNextWord();
+        }
+        if (!correct) {
+            setList([...list, current]);
+        }
+    }
+
+    console.debug('infinite', wordsCount === Infinity);
+
     return (
         <>
             <PortalHost name="modal" />
@@ -90,7 +101,7 @@ export default function() {
                  <QuizModal
                      open={open}
                      onClose={onClose}
-                     onAnswer={getNextWord}
+                     onAnswer={onAnswer}
                      words={list}
                      infinite={wordsCount === Infinity}
                  />

@@ -10,7 +10,7 @@ interface Props {
     words: Array<Words> | null;
     open: boolean;
     onClose: () => void;
-    onAnswer: () => void;
+    onAnswer: (correct: boolean, current: Words) => Promise<void>;
     infinite: boolean;
 }
 
@@ -66,10 +66,10 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
     }
 
     function buildAction(gender: Gender): () => void {
-        return () => {
+        return async () => {
             setRevealed(true);
             setAnswer(gender);
-            props.onAnswer();
+            await props.onAnswer(word!.gender === gender, word!);
         };
     }
 
