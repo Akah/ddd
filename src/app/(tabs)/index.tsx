@@ -10,6 +10,35 @@ import { Q } from '@nozbe/watermelondb';
 import { WordCount } from '../../components/quiz/WordCount';
 import { Setting } from '../../components/Setting';
 
+async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words> {
+    const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
+    let queryString = 'select * from words';
+    if (list.length > 0) {
+        queryString += ` where id NOT IN (${excludedIdsString})`;
+    }
+    if (isRandom) {
+        queryString += ' order by random()';
+    }
+    queryString += ' limit 1';
+    const result = await database.collections.get<Words>('words').query(
+        Q.unsafeSqlQuery(queryString)
+    );
+    return result[0];
+}
+
+async function getWords(isRandom: boolean, limit: number): Promise<Array<Words>> {
+    let queryString = 'select * from words';
+    if (isRandom) {
+        queryString += ' order by random()';
+    }
+    if (limit != Infinity) {
+        queryString += ` limit ${limit}`;
+    }
+    return database.collections.get<Words>('words').query(
+        Q.unsafeSqlQuery(queryString)
+    ).fetch();
+}
+
 const style = StyleSheet.create({
     root: {
         flex: 1,
@@ -31,9 +60,11 @@ export default function() {
 
     async function onOpen(): Promise<void> {
         if (wordsCount === Infinity) {
-            await getNextWord();
+            const nextWord = await getNextWord(list, isRandom);
+            setList([...list, nextWord])
         } else {
-            await getWords()
+            const words = await getWords(isRandom, wordsCount);
+            setList(words);
         }
         setOpen(true);
     }
@@ -43,50 +74,14 @@ export default function() {
         setList([]);
     }
 
-    async function getWords(): Promise<void> {
-        let queryString = 'select * from words';
-
-        if (isRandom) {
-            queryString += ' order by random()';
-        }
-
-        if (wordsCount != Infinity) {
-            queryString += ` limit ${wordsCount}`;
-        }
-
-        const result = await database.collections.get<Words>('words').query(
-            Q.unsafeSqlQuery(queryString)
-        ).fetch();
-
-        setList(result);
-    }
-
-    async function getNextWord(): Promise<void> {
-        const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
-        let queryString = 'select * from words';
-        if (list.length > 0) {
-            queryString += ` where id NOT IN (${excludedIdsString})`;
-        }
-        if (isRandom) {
-            queryString += ' order by random()';
-        }
-        queryString += ' limit 1';
-        const result = await database.collections.get<Words>('words').query(
-            Q.unsafeSqlQuery(queryString)
-        );
-        setList([...list, ...result]);
-    }
-
     async function onAnswer(correct: boolean, current: Words): Promise<void> {
-        if (wordsCount === Infinity) {
-            await getNextWord();
-        }
         if (!correct) {
             setList([...list, current]);
+        } else if (wordsCount === Infinity) {
+            const nextWord = await getNextWord(list, isRandom);
+            setList([...list, nextWord]);
         }
     }
-
-    console.debug('infinite', wordsCount === Infinity);
 
     return (
         <>
