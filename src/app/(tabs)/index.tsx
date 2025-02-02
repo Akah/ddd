@@ -48,11 +48,11 @@ const style = StyleSheet.create({
     },
 });
 
-export default function() {
+export default function () {
     const [open, setOpen] = React.useState(false);
-    const [ list, setList ] = React.useState<Array<Words>>([]);
-    const [ wordsCount, setWordsCount ] = React.useState<number>(10);
-    const [ isRandom, setIsRandom ] = React.useState<boolean>(false);
+    const [list, setList] = React.useState<Array<Words>>([]);
+    const [wordsCount, setWordsCount] = React.useState<number>(10);
+    const [isRandom, setIsRandom] = React.useState<boolean>(false);
 
     function setSlider(value: number): void {
         setWordsCount(value > 100 ? Infinity : value);
@@ -83,23 +83,55 @@ export default function() {
         }
     }
 
+    async function updateWordsSeen(words: Array<Words>): Promise<void>{
+        const now = Date.now();
+        words.map((word) => {
+            word.update((w) => {
+                w.seen = now;
+                w.correct = word.correct + 1; // <- should be onContinue
+            })
+        })
+    }
+
     return (
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
-                <Button onPress={onOpen} color="white" borderColor="lightgrey" textStyles={{ color: 'grey' }}>start</Button>
-                <WordCount value={wordsCount} setValue={setSlider} />
+                <Button
+                    onPress={onOpen}
+                    color="white"
+                    borderColor="lightgrey"
+                    textStyles={{ color: 'grey' }}
+                >
+                    start
+                </Button>
+                <View style={{width: '100%'}}>
+                    <Setting.Surface>
+                        <Setting.Slider
+                            label={`Number of words: ${wordsCount === Infinity ? 'Infinite' : wordsCount}`}
+                            value={wordsCount}
+                            set={setSlider}
+                            step={10}
+                            min={10}
+                            max={110}
+                        />
+                    </Setting.Surface>
+                </View>
                 <Setting.Surface>
-                    <Setting.Boolean label="Random words" value={isRandom} set={async (value: boolean) => setIsRandom(value)} />
+                    <Setting.Boolean
+                        label="Random words"
+                        value={isRandom}
+                        set={async (value: boolean) => setIsRandom(value)}
+                    />
                 </Setting.Surface>
                 {open &&
-                 <QuizModal
-                     open={open}
-                     onClose={onClose}
-                     onAnswer={onAnswer}
-                     words={list}
-                     infinite={wordsCount === Infinity}
-                 />
+                    <QuizModal
+                        open={open}
+                        onClose={onClose}
+                        onAnswer={onAnswer}
+                        words={list}
+                        infinite={wordsCount === Infinity}
+                    />
                 }
             </View >
         </>

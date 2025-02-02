@@ -16,12 +16,11 @@ interface Props {
 
 export type Article = 'der' | 'die' | 'das';
 
-const lookup = new Map<Gender, Article>(Object.entries({
-    'm': 'der',
-    'f': 'die',
-    'n': 'das'
-}));
-
+const lookup = new Map<Gender, Article>([
+    ['m', 'der'],
+    ['f', 'die'],
+    ['n', 'das'],
+])
 
 // TODO:  move to Gender class
 export function genderToArticle(gender: Gender): Article {
@@ -91,7 +90,7 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
 
     return (
         <TouchableOpacity style={itemStyle} onPress={() => setModal(true)}>
-            <View>
+            <View style={{backgroundColor: 'red'}}>
                 <Text style={style.text}>{`${genderToArticle(props.word.gender)} ${props.word.noun}`}</Text>
             </View>
             <Modal visible={modal} onRequestClose={() => setModal(false)}>

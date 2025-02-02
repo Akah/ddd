@@ -1,10 +1,11 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { Modal } from './Modal';
 import { Surface as DefaultSurface } from './Surface';
 import { Button as DefaultButton } from './Button';
+import DefaultSlider from '@react-native-community/slider';
 
 const style = StyleSheet.create({
     group: {
@@ -40,15 +41,21 @@ const style = StyleSheet.create({
     toggle: {
         marginRight: -4,
     },
-    buton: {
-        width: '100%',
+    sliderView: {
+        alignItems: 'stretch',
+        flexDirection: 'column',
+        marginBottom: -4,
+    },
+    slider: {
+        marginLeft: -10,
+        height: 32,
     }
 });
 
 interface SettingProps<T> {
     label: string;
     value: T;
-    set?: (value: T) => Promise<void>;
+    set?: (value: T) => Promise<void> | void;
 }
 
 interface StringProps extends SettingProps<string>{
@@ -105,7 +112,7 @@ const String: React.FC<StringProps> = (props: StringProps) => {
     );
 };
 
-type BooleanProps = SettingProps<boolean>
+type BooleanProps = SettingProps<boolean>;
 
 const Boolean: React.FC<BooleanProps> = (props: BooleanProps) => {
     return (
@@ -115,6 +122,27 @@ const Boolean: React.FC<BooleanProps> = (props: BooleanProps) => {
         </View>
     );
 };
+
+interface SliderProps extends SettingProps<number> {
+    step: number;
+    min: number;
+    max: number;
+}
+
+const Slider: React.FC<SliderProps> = (props: SliderProps) => {
+    return (
+        <View style={[style.setting, style.sliderView]}>
+            <Text style={style.label}>{props.label}</Text>
+            <DefaultSlider
+                style={style.slider}
+                onValueChange={props.set}
+                step={props.step}
+                minimumValue={props.min}
+                maximumValue={props.max}
+            />
+        </View>
+    );
+}
 
 interface GroupProps extends React.PropsWithChildren {
     label: string,
@@ -161,4 +189,5 @@ export const Setting = {
     Button,
     Group,
     Surface,
-};
+    Slider,
+} as const;

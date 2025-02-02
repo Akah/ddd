@@ -91,9 +91,14 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                     </View>
                 }
                 <View style={style.row}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
-                        <Text style={style.text}>{' '}{props.word.noun}</Text>
+                    <View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
+                            <Text style={style.text}>{' '}{props.word.noun}</Text>
+                        </View>
+                        {__DEV__ &&
+                            <Text style={[style.text, {fontSize: 16, color: '#aaa'}]}>seen: {new Date(props.word.seen).toISOString()}</Text>
+                        }
                     </View>
                     <MaterialIcons
                         name={props.word.favorite ? 'favorite' : 'favorite-outline'}

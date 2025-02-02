@@ -5,6 +5,7 @@ import { QuizBar } from "./Bar";
 import { QuizController } from "./Controller";
 import { QuizSurface } from "./Surface";
 import { Gender, Words } from '../../model/model';
+import { database } from '../../model/database';
 
 interface Props {
     words: Array<Words> | null;
@@ -52,10 +53,18 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
 
     const progress = props.infinite ? -1 : calculateProgress(position, total!);
 
-    function onContinue(): void {
+    async function onContinue(): Promise<void> {
         setRevealed(false);
         setAnswer(null);
         setPosition(position + 1);
+        if (word != null) {
+            await database.write(async () => {
+                word.update((w) => {
+                    w.seen = Date.now();
+                    console.debug('seen', w.seen);
+                });
+            });
+        }
     }
 
     function onClose(): void {
