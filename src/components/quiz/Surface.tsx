@@ -9,6 +9,7 @@ import { colors } from '../../constants';
 import { database } from '../../model/database';
 import { withObservables } from '@nozbe/watermelondb/react';
 import { endingToGenderString } from '../../app/_layout';
+import { WordInfo } from '../debug/WordInfo';
 
 const style = StyleSheet.create({
     main: {
@@ -96,9 +97,6 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                             <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
                             <Text style={style.text}>{' '}{props.word.noun}</Text>
                         </View>
-                        {__DEV__ &&
-                            <Text style={[style.text, {fontSize: 16, color: '#aaa'}]}>seen: {new Date(props.word.seen).toISOString()}</Text>
-                        }
                     </View>
                     <MaterialIcons
                         name={props.word.favorite ? 'favorite' : 'favorite-outline'}
@@ -108,6 +106,7 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
                     />
                 </View>
                 {getNotice()}
+                {__DEV__ && <WordInfo word={props.word}/>}
             </Surface>
         </View>
     );

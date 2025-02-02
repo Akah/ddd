@@ -78,10 +78,10 @@ function useInit(): void {
             }
             const timer = Date.now();
             // TO RESET DB:
-            // const deleted = (await wordsCollection.query()).map((each) => each.prepareDestroyPermanently());
-            // await database.write(async () => {
-            //     await database.batch(deleted);
-            // });
+            /* const deleted = (await wordsCollection.query()).map((each) => each.prepareDestroyPermanently());
+             * await database.write(async () => {
+             *     await database.batch(deleted);
+             * }); */
 
             const actions = await Promise.all(WordsJSON.map(async (record) => {
                 return wordsCollection.prepareCreate((word) => {

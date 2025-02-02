@@ -4,7 +4,7 @@ import { appSchema, tableSchema } from '@nozbe/watermelondb';
 export type Table = 'settings';
 
 export default appSchema({
-    version: 4,
+    version: 5,
     tables: [
         tableSchema({
             name: 'settings',
@@ -29,6 +29,7 @@ export default appSchema({
                 { name: 'seen', type: 'number', isOptional: true },
                 { name: 'correct', type: 'number', isOptional: true },
                 { name: 'ending', type: 'string', isOptional: true },
+                { name: 'lastSeen', type: 'number', isOptional: true},
             ],
         }),
     ],

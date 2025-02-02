@@ -1,4 +1,5 @@
 import { PortalHost } from '@gorhom/portal';
+import { Q } from '@nozbe/watermelondb';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -6,8 +7,6 @@ import { Button } from '../../components/Button';
 import { QuizModal } from '../../components/quiz/Modal';
 import { Words } from '../../model/model';
 import { database } from '../../model/database';
-import { Q } from '@nozbe/watermelondb';
-import { WordCount } from '../../components/quiz/WordCount';
 import { Setting } from '../../components/Setting';
 
 async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words> {
@@ -81,16 +80,6 @@ export default function () {
             const nextWord = await getNextWord(list, isRandom);
             setList([...list, nextWord]);
         }
-    }
-
-    async function updateWordsSeen(words: Array<Words>): Promise<void>{
-        const now = Date.now();
-        words.map((word) => {
-            word.update((w) => {
-                w.seen = now;
-                w.correct = word.correct + 1; // <- should be onContinue
-            })
-        })
     }
 
     return (

@@ -8,6 +8,7 @@ import { database } from '../model/database';
 import { Gender, Words } from '../model/model';
 import { Modal } from './Modal';
 import { LIST_RENDER_BATCH } from '../constants';
+import { WordInfo } from './debug/WordInfo';
 
 interface Props {
     words: Array<Words>;
@@ -79,6 +80,7 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
         props.length === props.index + 1 ? style.bottom : undefined,
     ];
     const [modal, setModal] = React.useState(false);
+    const [showInfo, setShowInfo] = React.useState(false);
 
     async function toggleFavorite(): Promise<void> {
         await database.write(async () => {
@@ -88,9 +90,13 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
         });
     }
 
+    function toggleShowInfo(): void {
+        setShowInfo(!showInfo);
+    }
+
     return (
         <TouchableOpacity style={itemStyle} onPress={() => setModal(true)}>
-            <View style={{backgroundColor: 'red'}}>
+            <View>
                 <Text style={style.text}>{`${genderToArticle(props.word.gender)} ${props.word.noun}`}</Text>
             </View>
             <Modal visible={modal} onRequestClose={() => setModal(false)}>
@@ -107,6 +113,12 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
                     <Text style={style.text}>Translate</Text>
                     <MaterialIcons name={'translate'} size={24} color='grey' />
                 </View>
+                {__DEV__ && <>
+                    <TouchableOpacity style={style.modalItem} onPress={toggleShowInfo}>
+                        <Text style={style.text}>Info...</Text>
+                    </TouchableOpacity>
+                    {showInfo && <WordInfo word={props.word}/> }
+                </>}
             </Modal>
         </TouchableOpacity>
     );

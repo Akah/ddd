@@ -11,7 +11,7 @@ interface Props {
     words: Array<Words> | null;
     open: boolean;
     onClose: () => void;
-    onAnswer: (correct: boolean, current: Words) => Promise<void>;
+    onAnswer: (correct: boolean, current: Words, position: number) => Promise<void>;
     infinite: boolean;
 }
 
@@ -60,8 +60,11 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
         if (word != null) {
             await database.write(async () => {
                 word.update((w) => {
-                    w.seen = Date.now();
-                    console.debug('seen', w.seen);
+                    w.lastSeen = Date.now();
+                    w.seen++;
+                    if (correct) {
+                        w.correct++;
+                    }
                 });
             });
         }
@@ -78,7 +81,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
         return async () => {
             setRevealed(true);
             setAnswer(gender);
-            await props.onAnswer(word!.gender === gender, word!);
+            await props.onAnswer(word!.gender === gender, word!, position);
         };
     }
 

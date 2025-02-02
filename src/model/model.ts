@@ -47,11 +47,14 @@ export class Words extends Model {
     @field('frequency')
     public frequency!: number;
 
-    @field('seen')
+    @field('seen') // times the word has been seen
     public seen!: number;
 
-    @field('correct')
+    @field('correct') // times the word was answered correctly
     public correct!: number;
+
+    @field('lastSeen')
+    public lastSeen!: number;
 
     @field('favorite')
     public favorite!: boolean;
