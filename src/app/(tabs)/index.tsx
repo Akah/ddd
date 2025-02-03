@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-raw-text */
 import { PortalHost } from '@gorhom/portal';
 import { Q } from '@nozbe/watermelondb';
 import React from 'react';
@@ -25,17 +26,52 @@ async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words
     return result[0];
 }
 
-async function getWords(isRandom: boolean, limit: number): Promise<Array<Words>> {
-    let queryString = 'select * from words';
-    if (isRandom) {
-        queryString += ' order by random()';
-    }
+async function getRandom(limit: number): Promise<Array<Words>> {
+    let queryString = 'select * from words order by random()';
     if (limit != Infinity) {
         queryString += ` limit ${limit}`;
     }
     return database.collections.get<Words>('words').query(
         Q.unsafeSqlQuery(queryString)
     ).fetch();
+}
+
+async function getFrequency(limit: number): Promise<Array<Words>> {
+    return database.collections.get<Words>('words').query(
+        Q.where('lastSeen', Q.eq(0)),
+        Q.take(limit)
+    ).fetch();
+}
+
+async function getFavorites(limit: number): Promise<Array<Words>> {
+    return database.collections.get<Words>('words').query(
+        Q.where('favorite', Q.eq(true)),
+        Q.sortBy('lastSeen', Q.desc),
+        Q.take(limit),
+    ).fetch();
+}
+
+async function getMistakes(limit: number): Promise<Array<Words>> {
+    let queryString = 'SELECT * FROM words WHERE seen > correct ORDER BY (correct/seen) ASC';
+    if (limit != Infinity) {
+        queryString += ` limit ${limit}`;
+    }
+    return database.collections.get<Words>('words').query(
+        Q.unsafeSqlQuery(queryString)
+    ).fetch();
+}
+
+function getQuery(quizType: QuizType): (limit: number) => Promise<Array<Words>> {
+    switch (quizType) {
+        case 'favorites':
+            return getFavorites;
+        case 'mistakes':
+            return getMistakes;
+        case 'frequency':
+            return getFrequency;
+        default:
+            return getRandom;
+    }
 }
 
 const style = StyleSheet.create({
@@ -47,11 +83,15 @@ const style = StyleSheet.create({
     },
 });
 
+type QuizType = 'random' | 'mistakes' | 'favorites' | 'frequency';
+
 export default function () {
     const [open, setOpen] = React.useState(false);
     const [list, setList] = React.useState<Array<Words>>([]);
     const [wordsCount, setWordsCount] = React.useState<number>(10);
-    const [isRandom, setIsRandom] = React.useState<boolean>(false);
+    const [quizType, setQuizType] = React.useState<QuizType>('random');
+
+    const isRandom = quizType === 'random';
 
     function setSlider(value: number): void {
         setWordsCount(value > 100 ? Infinity : value);
@@ -62,7 +102,8 @@ export default function () {
             const nextWord = await getNextWord(list, isRandom);
             setList([...list, nextWord])
         } else {
-            const words = await getWords(isRandom, wordsCount);
+            const query = getQuery(quizType);
+            const words = await query(wordsCount);
             setList(words);
         }
         setOpen(true);
@@ -73,6 +114,7 @@ export default function () {
         setList([]);
     }
 
+    // TODO: provide setList as prop so that this can be inside QuizModal
     async function onAnswer(correct: boolean, current: Words): Promise<void> {
         if (!correct) {
             setList([...list, current]);
@@ -94,7 +136,7 @@ export default function () {
                 >
                     start
                 </Button>
-                <View style={{width: '100%'}}>
+                <View style={{ width: '100%' }}>
                     <Setting.Surface>
                         <Setting.Slider
                             label={`Number of words: ${wordsCount === Infinity ? 'Infinite' : wordsCount}`}
@@ -107,10 +149,17 @@ export default function () {
                     </Setting.Surface>
                 </View>
                 <Setting.Surface>
-                    <Setting.Boolean
+                    <Setting.String
                         label="Random words"
-                        value={isRandom}
-                        set={async (value: boolean) => setIsRandom(value)}
+                        value={quizType}
+                        options={[
+                            { key: 'random', value: 'Random' },
+                            { key: 'mistakes', value: 'Common mistakes' },
+                            { key: 'favorites', value: 'Favorites' },
+                            { key: 'frequency', value: 'Frequency' },
+
+                        ]}
+                        set={async (value: string) => setQuizType(value as QuizType)}
                     />
                 </Setting.Surface>
                 {open &&
