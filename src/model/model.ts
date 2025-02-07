@@ -31,6 +31,18 @@ export class Settings extends Model {
             setting = { ...setting, ...newSetting } as Settings;
         });
     }
+
+    public toObject(): object {
+        return {
+            theme: this.theme,
+            language: this.language,
+            reminders: this.reminders,
+            reminderTime: this.reminderTime,
+            animations: this.animations,
+            haptic: this.haptic,
+            sound: this.sound,
+        };
+    }
 }
 
 export type Gender = 'm' | 'n' | 'f';
@@ -61,4 +73,17 @@ export class Words extends Model {
 
     @text('ending')
     public ending!: string | null;
+
+    public toObject(): object {
+        return {
+            noun: this.noun,
+            gender: this.gender,
+            frequency: this.frequency,
+            seen: this.seen,
+            correct: this.correct,
+            lastSeen: this.lastSeen,
+            favorite: this.favorite,
+            ending: this.ending,
+        };
+    }
 }

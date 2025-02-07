@@ -1,13 +1,17 @@
-import React from 'react';
+import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
+import { map } from '@nozbe/watermelondb/utils/rx';
 import { StatusBar } from 'expo-status-bar';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
 import { version } from './../../../package.json';
-import { Settings } from '../../model/model';
+import { Settings, Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Setting } from '../../components/Setting';
-import { map } from '@nozbe/watermelondb/utils/rx';
+import { zip, zipWithPassword } from 'react-native-zip-archive';
 
 const settingsCollection = database.collections.get<Settings>('settings');
 const settingsQuery = settingsCollection.query()
@@ -94,6 +98,45 @@ function timeToString(time: number): string {
     return parsed.join('');
 }
 
+async function getWordsForExport(): Promise<Array<Words>> {
+    return database.collections.get<Words>('words').query(Q.where('lastSeen', Q.gt(0))).fetch();
+}
+
+async function getSettingsForExport(): Promise<Settings> {
+    return (await database.collections.get<Settings>('settings').query().fetch())[0];
+}
+
+async function exportData(): Promise<void> {
+    const [words, settings] = await Promise.all([
+        getWordsForExport(),
+        getSettingsForExport(),
+    ]);
+
+    const serialisedWords = words.map((w) => w.toObject());
+    const serialisedSettings = settings.toObject();
+
+    const combinedData = { words: serialisedWords, settings: serialisedSettings };
+
+    console.debug('writing:', JSON.stringify(combinedData, null, 2));
+    const exportPath = FileSystem.cacheDirectory + 'export.json';
+    console.debug('writing to file');
+    await FileSystem.writeAsStringAsync(exportPath, JSON.stringify(combinedData));
+    const ls = await FileSystem.readDirectoryAsync(FileSystem.cacheDirectory ?? '');
+    console.debug('files:',ls);
+    console.debug('zipping file');
+
+    await zip(exportPath, FileSystem.cacheDirectory + 'export.zip')
+        .then(async (path) => {
+            console.debug(`zip complete at ${path}`)
+            const ls2 = await FileSystem.readDirectoryAsync(FileSystem.cacheDirectory ?? '');
+            console.debug('files:', ls2);
+            if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(path);
+            }
+        })
+        .catch((error) => console.error(error));
+}
+
 const Component: React.FC<Props> = (props: Props) => {
     const settings = props.settings;
 
@@ -175,7 +218,7 @@ const Component: React.FC<Props> = (props: Props) => {
 
                     <Setting.Group label="Data">
                         <Setting.Button label="Import Data" />
-                        <Setting.Button label="Export Data" />
+                        <Setting.Button label="Export Data" onPress={exportData} />
                         <Setting.Button label="Delete Data" />
                     </Setting.Group>
 

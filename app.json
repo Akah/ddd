@@ -14,6 +14,7 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
+            "deploymentTarget": "15.5",
             "supportsTablet": true,
             "bundleIdentifier": "com.akah.ddd"
         },
@@ -32,6 +33,9 @@
             [
                 "expo-build-properties",
                 {
+                    "ios": {
+                        "deploymentTarget": "15.5"
+                    },
                     "android": {
                         "kotlinVersion": "1.6.10",
                         "packagingOptions": {

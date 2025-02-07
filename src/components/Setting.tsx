@@ -159,6 +159,7 @@ const Group: React.FC<GroupProps> = (props: GroupProps) => {
 
 interface ButtonProps {
     label: string;
+    onPress?: () => void;
 }
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
@@ -168,7 +169,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
             borderColor={'lightgrey'}
             textStyles={{color: 'grey', fontWeight: 'bold', textShadowRadius: 0}}
             style={{width: '100%', marginTop: 4, marginBottom: 0}}
-            onPress={() => {}}
+            onPress={props.onPress ?? (() => {}) }
         >
             {props.label}
         </DefaultButton>
