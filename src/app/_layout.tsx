@@ -5,6 +5,7 @@ import React from 'react';
 import WordsJSON from '../../assets/words.json';
 import { database } from '../model/database';
 import { Gender, Words } from '../model/model';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const MASCULINE = [
     'ant',
@@ -103,11 +104,13 @@ export default function PublicLayout() {
     useInit();
     return (
         <>
-            <PortalProvider>
-                <Stack>
-                    <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-                </Stack>
-            </PortalProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <PortalProvider>
+                    <Stack>
+                        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+                    </Stack>
+                </PortalProvider>
+            </GestureHandlerRootView>
         </>
     );
 }

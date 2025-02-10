@@ -9,6 +9,7 @@ import { QuizModal } from '../../components/quiz/Modal';
 import { Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Setting } from '../../components/Setting';
+import { Slider } from '../../components/Slider';
 
 async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words> {
     const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
@@ -128,7 +129,8 @@ export default function () {
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
-                <Button
+                <Slider/>
+                {/* <Button
                     onPress={onOpen}
                     color="white"
                     borderColor="lightgrey"
@@ -161,7 +163,7 @@ export default function () {
                         ]}
                         set={async (value: string) => setQuizType(value as QuizType)}
                     />
-                </Setting.Surface>
+                </Setting.Surface> */}
                 {open &&
                     <QuizModal
                         open={open}

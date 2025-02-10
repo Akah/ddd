@@ -79,7 +79,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='index'
                 options={{
-                    title: 'Start a quiz',
+                    title: '',
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
                     tabBarShowLabel: false,
