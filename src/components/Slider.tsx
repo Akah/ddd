@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, LayoutChangeEvent } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, clamp, useAnimatedProps, withSpring } from 'react-native-reanimated';
+import { StyleSheet, View, LayoutChangeEvent } from 'react-native';
+import Animated, { useAnimatedStyle, runOnJS, clamp, useAnimatedProps, withSpring, useSharedValue } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
@@ -49,12 +49,16 @@ export const Slider: React.FC = React.memo(() => {
         setLayout(event.nativeEvent.layout);
     }
 
+    function finalise() {
+        position.value = findNearest([0, 2, 4, 6, 8, 10], position.value);
+    }
+
     const pan = Gesture.Pan()
         .onChange((event) => {
             position.value += event.changeX
         })
         .onFinalize(() => {
-            position.value = withSpring(findNearest([0, 20, 40, 60, 80, 100], position.value));
+            runOnJS(finalise)();
         })
     ;
 

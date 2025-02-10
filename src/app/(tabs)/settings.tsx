@@ -6,12 +6,12 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
+import { zip } from 'react-native-zip-archive';
 
 import { version } from './../../../package.json';
 import { Settings, Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Setting } from '../../components/Setting';
-import { zip, zipWithPassword } from 'react-native-zip-archive';
 
 const settingsCollection = database.collections.get<Settings>('settings');
 const settingsQuery = settingsCollection.query()
@@ -117,24 +117,16 @@ async function exportData(): Promise<void> {
 
     const combinedData = { words: serialisedWords, settings: serialisedSettings };
 
-    console.debug('writing:', JSON.stringify(combinedData, null, 2));
     const exportPath = FileSystem.cacheDirectory + 'export.json';
-    console.debug('writing to file');
     await FileSystem.writeAsStringAsync(exportPath, JSON.stringify(combinedData));
-    const ls = await FileSystem.readDirectoryAsync(FileSystem.cacheDirectory ?? '');
-    console.debug('files:',ls);
-    console.debug('zipping file');
 
     await zip(exportPath, FileSystem.cacheDirectory + 'export.zip')
         .then(async (path) => {
-            console.debug(`zip complete at ${path}`)
-            const ls2 = await FileSystem.readDirectoryAsync(FileSystem.cacheDirectory ?? '');
-            console.debug('files:', ls2);
             if (await Sharing.isAvailableAsync()) {
-                await Sharing.shareAsync(path);
+                await Sharing.shareAsync('file://' + path);
             }
         })
-        .catch((error) => console.error(error));
+        .catch(console.error);
 }
 
 const Component: React.FC<Props> = (props: Props) => {
@@ -222,7 +214,7 @@ const Component: React.FC<Props> = (props: Props) => {
                         <Setting.Button label="Delete Data" />
                     </Setting.Group>
 
-                    <Text style={{ alignSelf: 'center' }}>{`Version: ${version}`}</Text>
+                    <Text style={{ alignSelf: 'center', color: 'grey' }}>{`Version: ${version}`}</Text>
                 </View>
             </ScrollView>
         </>

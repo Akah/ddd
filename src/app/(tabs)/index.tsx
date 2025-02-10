@@ -129,8 +129,8 @@ export default function () {
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
-                <Slider/>
-                {/* <Button
+                {/* <Slider/> */}
+                <Button
                     onPress={onOpen}
                     color="white"
                     borderColor="lightgrey"
@@ -163,7 +163,7 @@ export default function () {
                         ]}
                         set={async (value: string) => setQuizType(value as QuizType)}
                     />
-                </Setting.Surface> */}
+                </Setting.Surface>
                 {open &&
                     <QuizModal
                         open={open}
