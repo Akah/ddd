@@ -3,7 +3,6 @@ import { withObservables } from '@nozbe/watermelondb/react';
 import { map } from '@nozbe/watermelondb/utils/rx';
 import { StatusBar } from 'expo-status-bar';
 import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { zip } from 'react-native-zip-archive';
@@ -119,14 +118,25 @@ async function exportData(): Promise<void> {
 
     const exportPath = FileSystem.cacheDirectory + 'export.json';
     await FileSystem.writeAsStringAsync(exportPath, JSON.stringify(combinedData));
+    const exportZip = FileSystem.cacheDirectory + 'export.zip';
 
-    await zip(exportPath, FileSystem.cacheDirectory + 'export.zip')
-        .then(async (path) => {
-            if (await Sharing.isAvailableAsync()) {
-                await Sharing.shareAsync('file://' + path);
+    await zip(exportPath, exportZip)
+        .then(async (_path) => {
+            const SAF = FileSystem.StorageAccessFramework;
+            const result = await SAF.requestDirectoryPermissionsAsync('/Download');
+            console.debug(result);
+            if (result.granted) {
+                await SAF.moveAsync({from: _path, to: result.directoryUri + 'export.zip'});
             }
+            /* if (await Sharing.isAvailableAsync()) {
+             *     await Sharing.shareAsync(exportZip);
+             * } */
         })
         .catch(console.error);
+}
+
+async function importData(): Promise<void> {
+
 }
 
 const Component: React.FC<Props> = (props: Props) => {
