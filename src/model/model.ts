@@ -76,6 +76,7 @@ export class Words extends Model {
 
     public toObject(): object {
         return {
+            id: this.id,
             noun: this.noun,
             gender: this.gender,
             frequency: this.frequency,

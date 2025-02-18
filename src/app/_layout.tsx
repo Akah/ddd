@@ -84,8 +84,9 @@ function useInit(): void {
              *     await database.batch(deleted);
              * }); */
 
-            const actions = await Promise.all(WordsJSON.map(async (record) => {
+            const actions = await Promise.all(WordsJSON.map(async (record, index) => {
                 return wordsCollection.prepareCreate((word) => {
+                    word._raw.id = index.toString();
                     word.noun = record.noun;
                     word.gender = toGender(record.gender);
                     word.frequency = record.freq;

@@ -3,9 +3,12 @@ import { withObservables } from '@nozbe/watermelondb/react';
 import { map } from '@nozbe/watermelondb/utils/rx';
 import { StatusBar } from 'expo-status-bar';
 import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import * as DocumentPicker from 'expo-document-picker';
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { zip } from 'react-native-zip-archive';
+import { View, Text, ScrollView, Platform } from 'react-native';
+
+import { zip, unzip } from 'react-native-zip-archive';
 
 import { version } from './../../../package.json';
 import { Settings, Words } from '../../model/model';
@@ -116,27 +119,100 @@ async function exportData(): Promise<void> {
 
     const combinedData = { words: serialisedWords, settings: serialisedSettings };
 
-    const exportPath = FileSystem.cacheDirectory + 'export.json';
-    await FileSystem.writeAsStringAsync(exportPath, JSON.stringify(combinedData));
-    const exportZip = FileSystem.cacheDirectory + 'export.zip';
+    const exportPath = FileSystem.documentDirectory + 'export.json';
+    const exportZip = FileSystem.documentDirectory + 'export.zip';
 
-    await zip(exportPath, exportZip)
+    await FileSystem.writeAsStringAsync(exportPath, JSON.stringify(combinedData));
+
+    await zip([exportPath], exportZip)
         .then(async (_path) => {
-            const SAF = FileSystem.StorageAccessFramework;
-            const result = await SAF.requestDirectoryPermissionsAsync('/Download');
-            console.debug(result);
-            if (result.granted) {
-                await SAF.moveAsync({from: _path, to: result.directoryUri + 'export.zip'});
+            if (Platform.OS === 'android') {
+                const SAF = FileSystem.StorageAccessFramework;
+                const result = await SAF.requestDirectoryPermissionsAsync('/Download');
+                if (result.granted) {
+                    await SAF.moveAsync({ from: _path, to: result.directoryUri + 'export' });
+                }
+                return;
             }
-            /* if (await Sharing.isAvailableAsync()) {
-             *     await Sharing.shareAsync(exportZip);
-             * } */
+            await Sharing.shareAsync(_path);
         })
-        .catch(console.error);
+        .catch((error) => {
+            throw new Error(error);
+        })
+        .finally(async () => {
+            await FileSystem.deleteAsync(exportPath);
+            await FileSystem.deleteAsync(exportZip);
+        })
 }
 
+// TODO: cleanup function
 async function importData(): Promise<void> {
+    const { canceled, assets, output } = await DocumentPicker.getDocumentAsync();
+    if (canceled) {
+        console.debug('cancelled', output);
+        return;
+    }
+    const uri = assets[0].uri;
+    if (uri == null) {
+        throw new Error('Import error retrieving uri from import');
+    }
 
+    const importPath = await unzip(uri, FileSystem.cacheDirectory ?? '' );
+
+    const file = await FileSystem.readAsStringAsync(importPath + 'export.json');
+    const json = JSON.parse(file);
+    const settingsObject = json['settings'];
+    const wordsObject = json['words'];
+
+    // TODO: handle errors
+    if (wordsObject == null) {
+        throw new Error('Import error reading words');
+    }
+    if (settingsObject == null) {
+        throw new Error('Import error reading settings');
+    }
+
+    await database.write(async () => {
+        const settings = (await database.get<Settings>('settings').query().fetch())[0];
+        await settings.update((setting: Settings) => {
+            setting.language = settingsObject['language'];
+        });
+    });
+
+    let updates = 0;
+    const actions = await Promise.all(wordsObject.map(async (importWord: any) => {
+        const dbWord = await database.get<Words>('words').find(importWord.id);
+        return dbWord.prepareUpdate((_word: Words) => {
+            _word.favorite = importWord['favorite'];
+            _word.seen = importWord['seen'];
+            _word.correct = importWord['correct'];
+            _word.lastSeen = importWord['lastSeen'];
+            updates++;
+        });
+    }));
+
+    await database.write(async () => {
+        await database.batch(actions);
+    });
+    console.debug('updated', updates, 'records');
+}
+
+async function resetSettings(): Promise<void> {
+    await database.write(async () => {
+        const settings = (await database.get<Settings>('settings').query().fetch())[0];
+        await settings.update((settings: Settings) => {
+            // Misc
+            settings.language = 'english';
+            settings.theme = 'auto';
+            // Reminders
+            settings.reminders = false;
+            settings.reminderTime = 900;
+            // Accessibility
+            settings.animations = false;
+            settings.animations = false;
+            settings.haptic = false;
+        });
+    });
 }
 
 const Component: React.FC<Props> = (props: Props) => {
@@ -219,9 +295,9 @@ const Component: React.FC<Props> = (props: Props) => {
                     </Setting.Group>
 
                     <Setting.Group label="Data">
-                        <Setting.Button label="Import Data" />
+                        <Setting.Button label="Import Data" onPress={importData} />
                         <Setting.Button label="Export Data" onPress={exportData} />
-                        <Setting.Button label="Delete Data" />
+                        <Setting.Button label="Delete Data" onPress={resetSettings} />
                     </Setting.Group>
 
                     <Text style={{ alignSelf: 'center', color: 'grey' }}>{`Version: ${version}`}</Text>
