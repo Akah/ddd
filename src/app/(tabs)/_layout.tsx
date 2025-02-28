@@ -6,6 +6,7 @@ import { StyleSheet, View, Text, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SearchBar } from '../../components/SearchBar';
+import { useTheme } from '../../colors';
 
 const searchStyle = StyleSheet.create({
     root: {
@@ -24,6 +25,7 @@ const searchStyle = StyleSheet.create({
 });
 
 const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProps) => {
+    const style = useStyle();
     return (
         <View
             style={[
@@ -45,13 +47,18 @@ const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProp
 
 export default function ProtectedLayout() {
     const insets = useSafeAreaInsets();
+    const theme = useTheme();
+    const style = useStyle();
     return (
-        <Tabs screenOptions={{ tabBarStyle: style.tabBar }}>
+        <Tabs
+            screenOptions={{ tabBarStyle: style.tabBar}}
+            sceneContainerStyle={{ backgroundColor: theme.wallpaper}}
+        >
             <Tabs.Screen
                 name='search'
                 options={{
                     title: 'Search',
-                    header: SearchHeader,
+                    header: (headerOptions) => <SearchHeader {...headerOptions}/>,
                     headerStyle: { ...style.header, paddingTop: insets.top },
                     // headerTitleStyle: style.text,
                     tabBarShowLabel: false,
@@ -108,21 +115,24 @@ export default function ProtectedLayout() {
     );
 }
 
-const style = StyleSheet.create({
-    header: {
-        backgroundColor: 'white',
-        borderColor: 'lightgrey',
-        borderBottomWidth: 2,
-    },
-    tabBar: {
-        backgroundColor: 'white',
-        borderColor: 'lightgrey',
-        borderTopWidth: 2,
-    },
-    text: {
-        paddingHorizontal: 8,
-        color: 'grey',
-        fontWeight: 'bold',
-        fontSize: 20,
-    },
-});
+const useStyle = () => {
+    const theme = useTheme();
+    return StyleSheet.create({
+        header: {
+            backgroundColor: theme.background,
+            borderBottomColor: theme.border,
+            borderBottomWidth: 2,
+        },
+        tabBar: {
+            backgroundColor: theme.background,
+            borderTopColor: theme.border,
+            borderTopWidth: 2,
+        },
+        text: {
+            paddingHorizontal: 8,
+            color: theme.text,
+            fontWeight: 'bold',
+            fontSize: 20,
+        },
+    });
+};

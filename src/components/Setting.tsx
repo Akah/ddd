@@ -1,18 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+import { Header, Text } from './Text';
 import { Modal } from './Modal';
 import { Surface as DefaultSurface } from './Surface';
 import { Button as DefaultButton } from './Button';
 import DefaultSlider from '@react-native-community/slider';
+import { useTheme } from '../colors';
 
 const style = StyleSheet.create({
     group: {
         marginBottom: 16,
-    },
-    surface: {
-        paddingVertical: 8,
     },
     setting: {
         alignItems: 'center',
@@ -21,19 +20,11 @@ const style = StyleSheet.create({
         width: '100%',
         marginVertical: 4,
     },
-    label: {
-        color: 'grey',
-        fontSize: 16
-    },
     button: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        color: 'grey',
-        fontSize: 16
     },
     header: {
-        color: 'grey',
-        fontWeight: 'bold',
         marginBottom: 4,
         paddingLeft: 10,
         fontSize: 18
@@ -74,14 +65,13 @@ const String: React.FC<StringProps> = (props: StringProps) => {
     }
 
     function setValue(value: string) {
-        console.debug(value);
         props.set?.(value);
     }
 
     return (
         <>
             <View style={style.setting}>
-                <Text style={style.label}>{props.label}</Text>
+                <Text>{props.label}</Text>
                 <TouchableOpacity onPress={onOpen}>
                     <Text style={style.button}>{props.value}</Text>
                 </TouchableOpacity>
@@ -91,9 +81,8 @@ const String: React.FC<StringProps> = (props: StringProps) => {
                     <TouchableOpacity
                         key={option.key}
                         onPress={() => setValue(option.key)}
-                        style={{
-                            padding: 8,
-                        }}>
+                        style={{ padding: 8 }}
+                    >
                         <View style={{
                             flexDirection: 'row',
                             justifyContent: 'space-between',
@@ -117,7 +106,7 @@ type BooleanProps = SettingProps<boolean>;
 const Boolean: React.FC<BooleanProps> = (props: BooleanProps) => {
     return (
         <View style={style.setting}>
-            <Text style={style.label}>{props.label}</Text>
+            <Text>{props.label}</Text>
             <Switch style={style.toggle} onValueChange={props.set} value={props.value} />
         </View>
     );
@@ -132,7 +121,7 @@ interface SliderProps extends SettingProps<number> {
 const Slider: React.FC<SliderProps> = (props: SliderProps) => {
     return (
         <View style={[style.setting, style.sliderView]}>
-            <Text style={style.label}>{props.label}</Text>
+            <Text>{props.label}</Text>
             <DefaultSlider
                 style={style.slider}
                 onValueChange={props.set}
@@ -151,7 +140,7 @@ interface GroupProps extends React.PropsWithChildren {
 const Group: React.FC<GroupProps> = (props: GroupProps) => {
     return (
         <View style={style.group}>
-            <Text style={style.header}>{props.label}</Text>
+            <Header style={style.header}>{props.label}</Header>
             {props.children}
         </View>
     );
@@ -163,13 +152,16 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+    const style = {
+        // width: '100%',
+        marginTop: 4,
+        marginBottom: 0,
+    };
     return (
         <DefaultButton
-            color={'white'}
-            borderColor={'lightgrey'}
-            textStyles={{color: 'grey', fontWeight: 'bold', textShadowRadius: 0}}
-            style={{width: '100%', marginTop: 4, marginBottom: 0}}
-            onPress={props.onPress ?? (() => {}) }
+            textStyles={{ fontWeight: 'bold', textShadowRadius: 0 }}
+            style={style}
+            onPress={props.onPress ?? (() => {})}
         >
             {props.label}
         </DefaultButton>
@@ -178,7 +170,7 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
 
 const Surface: React.FC<React.PropsWithChildren> = (props: React.PropsWithChildren) => {
     return (
-        <DefaultSurface style={{backgroundColor: 'white'}}>
+        <DefaultSurface>
             {props.children}
         </DefaultSurface>
     );

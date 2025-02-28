@@ -130,12 +130,7 @@ export default function () {
             <PortalHost name="modal" />
             <View style={style.root}>
                 {/* <Slider/> */}
-                <Button
-                    onPress={onOpen}
-                    color="white"
-                    borderColor="lightgrey"
-                    textStyles={{ color: 'grey' }}
-                >
+                <Button onPress={onOpen}>
                     start
                 </Button>
                 <View style={{ width: '100%' }}>

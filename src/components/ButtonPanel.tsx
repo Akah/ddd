@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import { Button } from './Button';
 import { colors } from '../constants';
 
@@ -10,6 +10,9 @@ const style = StyleSheet.create({
     button: {
         flexGrow: 1,
     },
+    whiteText: {
+        color: 'white',
+    }
 });
 
 interface Props {
@@ -17,11 +20,13 @@ interface Props {
 }
 
 export const ButtonPanel: React.FC<Props> = (props: Props) => {
+    const colorScheme = useColorScheme();
     return (
+        // TODO: button should take label prop instead of children
         <View style={style.container}>
             <Button
                 position="left"
-                style={[style.button]}
+                style={style.button}
                 color={colors.black.background}
                 borderColor={colors.black.border}
                 onPress={props.actions[0]}
@@ -30,7 +35,7 @@ export const ButtonPanel: React.FC<Props> = (props: Props) => {
             </Button>
             <Button
                 position="middle"
-                style={[style.button]}
+                style={style.button}
                 color={colors.red.background}
                 borderColor={colors.red.border}
                 onPress={props.actions[1]}
@@ -39,10 +44,11 @@ export const ButtonPanel: React.FC<Props> = (props: Props) => {
             </Button>
             <Button
                 position="right"
-                style={[style.button]}
+                style={style.button}
                 color={colors.gold.background}
                 borderColor={colors.gold.border}
                 onPress={props.actions[2]}
+                textStyles={colorScheme === 'dark' ? style.whiteText : undefined}
             >
                 das
             </Button>

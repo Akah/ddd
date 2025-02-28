@@ -1,7 +1,7 @@
 import React from 'react';
-import { Text } from 'react-native';
 
-import { Words } from "../../model/model";
+import { Words } from '../../model/model';
+import { Text } from '../Text';
 
 export const WordInfo: React.FC<{word: Words}> = (props) => {
     return (
@@ -15,4 +15,4 @@ export const WordInfo: React.FC<{word: Words}> = (props) => {
             <Text>Gender: {props.word.gender}</Text>
         </>
     );
-}
+};

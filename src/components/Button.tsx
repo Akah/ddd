@@ -1,15 +1,18 @@
 import React from 'react';
 import { View, Text, Button as RNButton, ColorValue, ViewStyle, TextStyle, StyleSheet, Pressable } from 'react-native';
+import { useTheme } from '../colors';
 
 type Position = 'left' | 'right' | 'bottom' | 'top' | 'middle';
 
-const useStyles = (position: Position | undefined, color: ColorValue, borderColor: ColorValue) => {
-    const borderRadius: number = 16;
-    const borderWidth: number = 2;
+const borderRadius: number = 16;
+const borderWidth: number = 2;
+
+const useStyles = (position: Position | undefined, color?: ColorValue, borderColor?: ColorValue) => {
+    const theme = useTheme();
     return StyleSheet.create({
         border: {
             borderWidth,
-            borderColor: borderColor,
+            borderColor: borderColor ?? theme.border,
             borderBottomWidth: borderWidth * 2,
             borderTopLeftRadius: position === 'left' || position === 'top' ? borderRadius : 0,
             borderTopRightRadius: position === 'right' || position === 'top' ? borderRadius : 0,
@@ -23,15 +26,16 @@ const useStyles = (position: Position | undefined, color: ColorValue, borderColo
             borderBottomLeftRadius: borderRadius,
             borderBottomRightRadius: borderRadius,
         },
+        // eslint-disable-next-line react-native/no-unused-styles
         button: {
-            backgroundColor: color,
+            backgroundColor: color ?? theme.background,
         },
         text: {
             textAlign: 'center',
             textTransform: 'uppercase',
             paddingVertical: 8,
             paddingHorizontal: 16,
-            color: 'white',
+            color: theme.text,
             textShadowOffset: {
                 width: 0,
                 height: 2,
@@ -45,8 +49,8 @@ const useStyles = (position: Position | undefined, color: ColorValue, borderColo
 export interface ButtonProps extends React.PropsWithChildren {
     onPress: () => void;
     position?: Position;
-    color: ColorValue;
-    borderColor: ColorValue;
+    color?: ColorValue;
+    borderColor?: ColorValue;
     style?: ViewStyle | Array<ViewStyle>;
     textStyles?: TextStyle;
     buttonStyle?: ViewStyle | Array<ViewStyle>;

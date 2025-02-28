@@ -8,16 +8,15 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import { useDebounceValue } from 'usehooks-ts';
+import { useTheme } from '../colors';
 
 const style = StyleSheet.create({
     root: {
-        borderColor: 'lightgrey',
         borderWidth: 2,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 8,
         paddingVertical: 4,
-        backgroundColor: '#eee',
         borderRadius: 999,
         margin: 8,
     },
@@ -31,6 +30,7 @@ const style = StyleSheet.create({
 });
 
 export const SearchBar: React.FC = () => {
+    const theme = useTheme();
     const [value, setValue] = React.useState('');
     const [debounced, setDebounced] = useDebounceValue('', 300);
     const rootNavigationState = useRootNavigationState();
@@ -56,11 +56,12 @@ export const SearchBar: React.FC = () => {
     );
 
     return (
-        <View style={style.root}>
-            <MaterialIcons name='search' size={24} color='grey' />
+        <View style={[style.root, {backgroundColor: theme.background, borderColor: theme.border}]}>
+            <MaterialIcons name='search' size={24} color={theme.text} />
             <TextInput
                 placeholder='Search words...'
-                style={style.input}
+                placeholderTextColor={theme.text} // TODO: different color?
+                style={[style.input, { color: theme.text }]}
                 value={value}
                 onChangeText={setValue}
             />

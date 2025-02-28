@@ -1,5 +1,7 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet, ColorValue } from 'react-native';
+import { Pressable, View, StyleSheet, ColorValue } from 'react-native';
+
+import { Text, Header } from './Text';
 import { Modal, ModalProps } from './Modal';
 
 interface Action {
@@ -20,20 +22,14 @@ const style = StyleSheet.create({
         maxWidth: 500,
     },
     title: {
-        color: 'grey',
-        fontWeight: 'bold',
-        fontSize: 22,
         marginBottom: 16,
     },
     subtitle: {
-        color: 'grey',
-        fontSize: 16,
         marginBottom: 16,
     },
     action: {
         fontWeight: 'bold',
         textTransform: 'uppercase',
-        color: 'grey',
         marginLeft: 16,
     },
     actionContainer: {
@@ -45,7 +41,7 @@ const style = StyleSheet.create({
 function renderAction(action: Action, index: number): React.ReactNode {
     return (
         <Pressable onPress={action.callback} key={`dialog-action-${index}`}>
-            <Text style={[style.action, {color: action.color ?? 'grey'}]}>
+            <Text style={[style.action, action.color ? {color: action.color} : undefined]}>
                 {action.label}
             </Text>
         </Pressable>
@@ -55,7 +51,7 @@ function renderAction(action: Action, index: number): React.ReactNode {
 export const Dialog: React.FC<DialogProps> = (props: DialogProps) => {
     return (
         <Modal visible={props.visible} surfaceProps={{ style: style.root }}>
-            <Text style={style.title}>{props.title}</Text>
+            <Header style={style.title}>{props.title}</Header>
             {props.subtitle &&
                 <Text style={style.subtitle}>{props.subtitle}</Text>
             }

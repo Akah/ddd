@@ -1,15 +1,17 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { withObservables } from '@nozbe/watermelondb/react';
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Surface } from '../Surface';
-import { MoreButton } from './MoreButton';
-import { genderToArticle } from '../WordsList';
-import { Gender, Words } from '../../model/model';
+import { StyleSheet, View } from 'react-native';
+
+import { endingToGenderString } from '../../app/_layout';
 import { colors } from '../../constants';
 import { database } from '../../model/database';
-import { withObservables } from '@nozbe/watermelondb/react';
-import { endingToGenderString } from '../../app/_layout';
+import { Gender, Words } from '../../model/model';
+import { Surface } from '../Surface';
+import { Text, Header } from '../Text';
+import { genderToArticle } from '../WordsList';
 import { WordInfo } from '../debug/WordInfo';
+import { MoreButton } from './MoreButton';
 
 const style = StyleSheet.create({
     main: {
@@ -17,10 +19,8 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    text: {
-        color: 'grey',
-        fontSize: 18,
-        fontWeight: 'bold',
+    response: {
+        fontSize: 20,
     },
     container: {
         flexDirection: 'column',
@@ -38,7 +38,7 @@ const style = StyleSheet.create({
         marginTop: 24,
     },
     bold: {
-        fontWeight: '900',
+        fontWeight: 'bold',
     },
     small: {
         fontSize: 14,
@@ -73,9 +73,9 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
         return props.revealed && props.word.ending != null && (
             <>
                 <View style={style.notice}>
-                    <Text style={[style.text, style.small]}>Note:</Text>
-                    <Text style={[style.text, style.small]}>
-                        Words ending with <Text style={style.bold}>-{props.word.ending}</Text> are always <Text style={style.bold}>{endingToGenderString(props.word.ending)}</Text>.
+                    <Text style={style.small}>Note:</Text>
+                    <Text style={style.small}>
+                        Words ending with <Text style={[style.small, style.bold]}>-{props.word.ending}</Text> are always <Text style={[style.small, style.bold]}>{endingToGenderString(props.word.ending)}</Text>.
                     </Text>
                 </View>
             </>
@@ -84,18 +84,18 @@ const QuizSurfaceComponent: React.FC<Props> = (props: Props) => {
 
     return (
         <View style={style.main}>
-            <Surface style={[style.container]} borderColor={borderColor()}>
+            <Surface style={style.container} borderColor={borderColor()}>
                 {props.revealed &&
                     <View style={[style.row, style.titleRow]}>
-                        <Text style={[style.text, { fontSize: 20 }]}>{props.correct ? 'Correct' : 'Incorrect'} !</Text>
+                        <Header style={[style.response, { fontSize: 20 }]}>{(props.correct ? 'Correct' : 'Incorrect') + '!'}</Header>
                         <MoreButton word={props.word} />
                     </View>
                 }
                 <View style={style.row}>
                     <View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={style.text}>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Text>
-                            <Text style={style.text}>{' '}{props.word.noun}</Text>
+                            <Header>{props.revealed ? genderToArticle(props.word.gender as Gender) : '___'}</Header>
+                            <Header>{' ' + props.word.noun}</Header>
                         </View>
                     </View>
                     <MaterialIcons

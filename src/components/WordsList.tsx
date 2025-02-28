@@ -2,13 +2,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ListRenderItemInfo } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity, ListRenderItemInfo } from 'react-native';
 
 import { database } from '../model/database';
 import { Gender, Words } from '../model/model';
 import { Modal } from './Modal';
 import { LIST_RENDER_BATCH } from '../constants';
 import { WordInfo } from './debug/WordInfo';
+import { Text } from './Text';
+import { useTheme } from '../colors';
 
 interface Props {
     words: Array<Words>;
@@ -36,12 +38,10 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: 'white',
         borderLeftWidth: 2,
         borderRightWidth: 2,
         borderTopWidth: 1,
         borderBottomWidth: 1,
-        borderColor: 'lightgrey',
         padding: 8,
         paddingHorizontal: 12,
         overflow: 'hidden',
@@ -62,7 +62,6 @@ const style = StyleSheet.create({
         justifyContent: 'space-between',
     },
     text: {
-        color: 'grey',
         marginRight: 32,
     }
 });
@@ -74,10 +73,15 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = (props: ItemProps) => {
+    const theme = useTheme();
     const itemStyle = [
         style.item,
         props.index === 0 ? style.top : undefined,
         props.length === props.index + 1 ? style.bottom : undefined,
+        {
+            borderColor: theme.border,
+            backgroundColor: theme.background,
+        },
     ];
     const [modal, setModal] = React.useState(false);
     const [showInfo, setShowInfo] = React.useState(false);

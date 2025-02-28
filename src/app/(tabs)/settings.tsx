@@ -6,13 +6,14 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import React from 'react';
-import { View, Text, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 
 import { zip, unzip } from 'react-native-zip-archive';
 
 import { version } from './../../../package.json';
 import { Settings, Words } from '../../model/model';
 import { database } from '../../model/database';
+import { Text } from '../../components/Text';
 import { Setting } from '../../components/Setting';
 
 const settingsCollection = database.collections.get<Settings>('settings');
@@ -300,7 +301,7 @@ const Component: React.FC<Props> = (props: Props) => {
                         <Setting.Button label="Delete Data" onPress={resetSettings} />
                     </Setting.Group>
 
-                    <Text style={{ alignSelf: 'center', color: 'grey' }}>{`Version: ${version}`}</Text>
+                    <Text style={{ alignSelf: 'center' }}>{`Version: ${version}`}</Text>
                 </View>
             </ScrollView>
         </>

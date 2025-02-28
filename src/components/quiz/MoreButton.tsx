@@ -1,18 +1,15 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, TouchableOpacity, Linking } from 'react-native';
 
 import { Modal } from '../Modal';
+import { Header } from '../Text';
 import { withObservables } from '@nozbe/watermelondb/react';
 import { Words } from '../../model/model';
 import { database } from '../../model/database';
+import { useTheme } from '../../colors';
 
 const style = StyleSheet.create({
-    text: {
-        color: 'grey',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
     listItem: {
         paddingVertical: 8,
         flexDirection: 'row',
@@ -25,6 +22,7 @@ const style = StyleSheet.create({
 })
 
 const MoreButtonComponent: React.FC<Props> = (props: Props) => {
+    const theme = useTheme();
     const [visible, setVisible] = React.useState(false);
 
     function open() {
@@ -51,17 +49,17 @@ const MoreButtonComponent: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <MaterialIcons name="more-horiz" size={24} color="grey" onPress={open} />
+            <MaterialIcons name="more-horiz" size={24} color={theme.text} onPress={open} />
             <Modal visible={visible} onRequestClose={close}>
                 <TouchableOpacity style={style.listItem} onPress={() => {}}>
                     <>
-                        <Text style={style.text}>Report an issue</Text>
-                        <MaterialIcons style={style.icon} name="flag" size={24} color="grey" />
+                        <Header>Report an issue</Header>
+                        <MaterialIcons style={style.icon} name="flag" size={24} color={theme.text} />
                     </>
                 </TouchableOpacity >
                 <TouchableOpacity style={style.listItem} onPress={() => {}}>
                     <>
-                        <Text style={style.text}>Definition</Text>
+                        <Header>Definition</Header>
                         <MaterialIcons
                             style={style.icon}
                             name="open-in-new"
@@ -73,7 +71,7 @@ const MoreButtonComponent: React.FC<Props> = (props: Props) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={style.listItem} onPress={() => {}}>
                     <>
-                        <Text style={style.text}>Favorite</Text>
+                        <Header>Favorite</Header>
                         <MaterialIcons
                             style={style.icon}
                             name={props.word.favorite ? 'favorite' : 'favorite-outline'}
@@ -85,7 +83,7 @@ const MoreButtonComponent: React.FC<Props> = (props: Props) => {
                 </TouchableOpacity>
                 <TouchableOpacity style={style.listItem} onPress={() => {}}>
                     <>
-                        <Text style={style.text}>Share</Text>
+                        <Header>Share</Header>
                         <MaterialIcons style={style.icon} name="share" size={24} color="grey" />
                     </>
                 </TouchableOpacity>
