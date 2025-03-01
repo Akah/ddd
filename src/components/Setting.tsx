@@ -7,7 +7,6 @@ import { Modal } from './Modal';
 import { Surface as DefaultSurface } from './Surface';
 import { Button as DefaultButton } from './Button';
 import DefaultSlider from '@react-native-community/slider';
-import { useTheme } from '../colors';
 
 const style = StyleSheet.create({
     group: {

@@ -6,7 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import React from 'react';
-import { View, ScrollView, Platform } from 'react-native';
+import { View, ScrollView, Platform, Appearance, ColorSchemeName } from 'react-native';
 
 import { zip, unzip } from 'react-native-zip-archive';
 
@@ -224,12 +224,17 @@ const Component: React.FC<Props> = (props: Props) => {
     }
 
     const setLanguage = makeSetter<string>(settings, 'language');
-    const setTheme = makeSetter<string>(settings, 'theme');
+    const setThemeDB = makeSetter<string>(settings, 'theme');
     const setReminders = makeSetter<boolean>(settings, 'reminders');
     // const setReminderTime = makeSetter<number>(settings, 'reminderTime');
     const setAnimations = makeSetter<boolean>(settings, 'animations');
     const setSound = makeSetter<boolean>(settings, 'sound');
     const setHaptic = makeSetter<boolean>(settings, 'haptic');
+
+    const setTheme = (value: string) => {
+        setThemeDB(value);
+        Appearance.setColorScheme(value as ColorSchemeName);
+    }
 
     return (
         <>

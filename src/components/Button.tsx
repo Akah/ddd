@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button as RNButton, ColorValue, ViewStyle, TextStyle, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Button as RNButton, ColorValue, ViewStyle, TextStyle, StyleSheet, Pressable, useColorScheme } from 'react-native';
 import { useTheme } from '../colors';
 
 type Position = 'left' | 'right' | 'bottom' | 'top' | 'middle';
