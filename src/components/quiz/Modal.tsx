@@ -31,6 +31,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
 
     React.useEffect(
         () => {
+            console.debug('c');
             setRevealed(false);
             setAnswer(null);
             setPosition(0);
@@ -40,6 +41,7 @@ export const QuizModal: React.FC<Props> = (props: Props) => {
 
     React.useEffect(
         () => {
+            console.debug('d');
             if (word == null) {
                 props.onClose();
             }

@@ -29,6 +29,7 @@ export const ButtonPanel: React.FC<Props> = (props: Props) => {
                 style={style.button}
                 color={colors.black.background}
                 borderColor={colors.black.border}
+                textStyles={style.whiteText}
                 onPress={props.actions[0]}
             >
                 der
@@ -38,6 +39,7 @@ export const ButtonPanel: React.FC<Props> = (props: Props) => {
                 style={style.button}
                 color={colors.red.background}
                 borderColor={colors.red.border}
+                textStyles={style.whiteText}
                 onPress={props.actions[1]}
             >
                 die
@@ -48,7 +50,7 @@ export const ButtonPanel: React.FC<Props> = (props: Props) => {
                 color={colors.gold.background}
                 borderColor={colors.gold.border}
                 onPress={props.actions[2]}
-                textStyles={colorScheme === 'dark' ? style.whiteText : undefined}
+                textStyles={style.whiteText}
             >
                 das
             </Button>

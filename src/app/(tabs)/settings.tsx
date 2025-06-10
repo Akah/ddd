@@ -102,7 +102,14 @@ function timeToString(time: number): string {
 }
 
 async function getWordsForExport(): Promise<Array<Words>> {
-    return database.collections.get<Words>('words').query(Q.where('lastSeen', Q.gt(0))).fetch();
+    // TODO: this doesn't include words that are 'unseen' but have been favourited
+    return database.collections.get<Words>('words')
+        .query(
+            Q.or(
+                Q.where('lastSeen', Q.gt(0)),
+                Q.where('favorite', Q.eq(true)),
+            )
+        ).fetch();
 }
 
 async function getSettingsForExport(): Promise<Settings> {
@@ -129,13 +136,25 @@ async function exportData(): Promise<void> {
         .then(async (_path) => {
             if (Platform.OS === 'android') {
                 const SAF = FileSystem.StorageAccessFramework;
-                const result = await SAF.requestDirectoryPermissionsAsync('/Download');
+                const result = await SAF.requestDirectoryPermissionsAsync();
                 if (result.granted) {
-                    await SAF.moveAsync({ from: _path, to: result.directoryUri + 'export' });
+                    const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
+                        result.directoryUri,
+                        'export.zip',
+                        'application/zip'
+                    );
+
+                    const fileData = await FileSystem.readAsStringAsync(exportZip, {
+                        encoding: FileSystem.EncodingType.Base64,
+                    });
+
+                    await FileSystem.writeAsStringAsync(fileUri, fileData, {
+                        encoding: FileSystem.EncodingType.Base64,
+                    });
                 }
                 return;
             }
-            await Sharing.shareAsync(_path);
+            await Sharing.shareAsync(exportPath);
         })
         .catch((error) => {
             throw new Error(error);
@@ -143,12 +162,12 @@ async function exportData(): Promise<void> {
         .finally(async () => {
             await FileSystem.deleteAsync(exportPath);
             await FileSystem.deleteAsync(exportZip);
-        })
+        });
 }
 
 // TODO: cleanup function
 async function importData(): Promise<void> {
-    const { canceled, assets, output } = await DocumentPicker.getDocumentAsync();
+    const { canceled, assets, output } = await DocumentPicker.getDocumentAsync({base64: false});
     if (canceled) {
         console.debug('cancelled', output);
         return;
@@ -157,10 +176,9 @@ async function importData(): Promise<void> {
     if (uri == null) {
         throw new Error('Import error retrieving uri from import');
     }
+    await unzip(uri, (FileSystem.cacheDirectory!) + 'dir');
 
-    const importPath = await unzip(uri, FileSystem.cacheDirectory ?? '' );
-
-    const file = await FileSystem.readAsStringAsync(importPath + 'export.json');
+    const file = await FileSystem.readAsStringAsync(FileSystem.cacheDirectory! + 'dir/' +'export.json');
     const json = JSON.parse(file);
     const settingsObject = json['settings'];
     const wordsObject = json['words'];
@@ -177,6 +195,14 @@ async function importData(): Promise<void> {
         const settings = (await database.get<Settings>('settings').query().fetch())[0];
         await settings.update((setting: Settings) => {
             setting.language = settingsObject['language'];
+            setting.theme = settingsObject['theme'];
+            //
+            setting.reminders = settingsObject['reminders'];
+            setting.reminderTime = settingsObject['reminderTime'];
+            //
+            setting.animations = settingsObject['animations'];
+            setting.sound = settingsObject['sound'];
+            setting.haptic= settingsObject['haptic'];
         });
     });
 
@@ -215,6 +241,18 @@ async function resetSettings(): Promise<void> {
         });
     });
 }
+// TODO: move somewhere logical
+function stringToColorSchemeName(str: string): ColorSchemeName {
+    switch (str) {
+        case 'dark':
+        case 'light':
+            return str;
+        case 'auto':
+            return null;
+        default:
+            throw new Error('invalid string conversion to theme: ' + str);
+    }
+}
 
 const Component: React.FC<Props> = (props: Props) => {
     const settings = props.settings;
@@ -233,8 +271,8 @@ const Component: React.FC<Props> = (props: Props) => {
 
     const setTheme = (value: string) => {
         setThemeDB(value);
-        Appearance.setColorScheme(value as ColorSchemeName);
-    }
+        Appearance.setColorScheme(stringToColorSchemeName(value));
+    };
 
     return (
         <>

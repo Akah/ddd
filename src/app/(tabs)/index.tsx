@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-raw-text */
 import { PortalHost } from '@gorhom/portal';
 import { Q } from '@nozbe/watermelondb';
-import React from 'react';
+import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Button } from '../../components/Button';
@@ -9,7 +9,7 @@ import { QuizModal } from '../../components/quiz/Modal';
 import { Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Setting } from '../../components/Setting';
-import { Slider } from '../../components/Slider';
+import { Accuracy } from '../../components/home/Accuracy';
 
 async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words> {
     const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
@@ -129,7 +129,7 @@ export default function () {
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
-                {/* <Slider/> */}
+                <Accuracy/>
                 <Button onPress={onOpen}>
                     start
                 </Button>
@@ -147,14 +147,13 @@ export default function () {
                 </View>
                 <Setting.Surface>
                     <Setting.String
-                        label="Random words"
+                        label="Quiz type"
                         value={quizType}
                         options={[
                             { key: 'random', value: 'Random' },
                             { key: 'mistakes', value: 'Common mistakes' },
                             { key: 'favorites', value: 'Favorites' },
                             { key: 'frequency', value: 'Frequency' },
-
                         ]}
                         set={async (value: string) => setQuizType(value as QuizType)}
                     />

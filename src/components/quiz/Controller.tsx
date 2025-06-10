@@ -16,6 +16,9 @@ const style = StyleSheet.create({
     root: {
         marginBottom: 16,
     },
+    text: {
+        color: 'white',
+    }
 })
 
 export const QuizController: React.FC<Props> = (props: Props) => {
@@ -29,6 +32,7 @@ export const QuizController: React.FC<Props> = (props: Props) => {
                     color={colors[correct ? 'green' : 'red'].background
                     }
                     borderColor={colors[correct ? 'green' : 'red'].border}
+                    textStyles={style.text}
                 >
                     continue
                 </Button >

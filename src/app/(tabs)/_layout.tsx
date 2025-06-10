@@ -2,7 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View, Text, ViewStyle } from 'react-native';
+import { StyleSheet, View, Text, ViewStyle, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SearchBar } from '../../components/SearchBar';
@@ -16,7 +16,8 @@ const searchStyle = StyleSheet.create({
         flexDirection: 'row',
         flexGrow: 1,
         width: '100%',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        paddingLeft: Platform.OS === 'android' ? 16 : undefined,
     },
     search: {
         position: 'absolute',
@@ -60,7 +61,7 @@ export default function ProtectedLayout() {
                     title: 'Search',
                     header: (headerOptions) => <SearchHeader {...headerOptions}/>,
                     headerStyle: { ...style.header, paddingTop: insets.top },
-                    // headerTitleStyle: style.text,
+                    headerTitleStyle: style.text,
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color }) => (
                         <MaterialIcons name='search' size={24} color={color} />
@@ -86,7 +87,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='index'
                 options={{
-                    title: '',
+                    title: 'Home',
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
                     tabBarShowLabel: false,
