@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+        <style>
+         :root {
+             --first: #222;
+             --second: #dd0000;
+             --third: #ffcc00;
+         }
+
+         .flex-container {
+             width: 512px;
+             height: 512px;
+             background-color: lightgrey;
+             display: flex;
+             flex-direction:   column;
+             flex-wrap: nowrap;
+             justify-content: center;
+             align-content: stretch;
+             align-items: stretch;
+             overflow: hidden;
+         }
+
+         .flex-container > div{
+             background-color: blue;
+             flex-grow: 1;
+         }
+
+         .flex-container > div:nth-child(1) {
+             background-color: var(--first);
+         }
+
+         .flex-container > div:nth-child(2) {
+             max-height: calc(512px * 0.75 / 3);
+             background-color: var(--second);
+         }
+
+         .flex-container > div:nth-child(3) {
+             background-color: var(--third);
+         }
+
+         #a {
+             position: absolute;
+             align-self: center;
+             font-family: "Varela Round", sans-serif;
+             font-size: 230px;
+             font-weight: 900;
+             font-style: normal;
+             color: white;
+             -webkit-text-stroke: 58px #c2c2c2;
+         }
+
+         #b {
+             position: absolute;
+             align-self: center;
+             font-family: "Varela Round", sans-serif;
+             font-size: 230px;
+             font-weight: 100;
+             font-style: normal;
+             color: white;
+             -webkit-text-stroke: 30px #fff;
+         }
+
+         #shadow {
+             left: 205px;
+             top: 250px;
+             height: 240px;
+             width: 600px;
+             background-color: rgba(0,0,0,0.25);
+             position: absolute;
+             transform: rotate(23deg);
+         }
+
+         #ring {
+             background-color: transparent;
+             width: 344px;
+             height:344px;
+             position: absolute;
+             border-radius: 9999px;
+             border: 2px solid blue;
+             align-self: center;
+         }
+        </style>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div id="shadow"></div>
+            <p id="a" class="longShadow">A</p>
+            <p id="b" class="longShadow">A</p>
+        </div>
+    </body>
+</html>
