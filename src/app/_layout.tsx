@@ -96,7 +96,7 @@ function useInit(): void {
             await database.write(async () => {
                 await database.batch(actions);
             });
-            console.debug('init db time:', Date.now() - timer, 'ms');
+            console.log('init db time:', Date.now() - timer, 'ms');
         })();
     }, []);
 }

@@ -169,7 +169,6 @@ async function exportData(): Promise<void> {
 async function importData(): Promise<void> {
     const { canceled, assets, output } = await DocumentPicker.getDocumentAsync({base64: false});
     if (canceled) {
-        console.debug('cancelled', output);
         return;
     }
     const uri = assets[0].uri;

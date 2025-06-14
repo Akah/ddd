@@ -41,7 +41,6 @@ export const SearchBar: React.FC = () => {
 
     React.useEffect(
         () => {
-            console.debug('a');
             setDebounced(value);
         },
         [value]
@@ -49,7 +48,6 @@ export const SearchBar: React.FC = () => {
 
     React.useEffect(
         () => {
-            console.debug('b');
             if (rootNavigationState) {
                 router.setParams({ search: debounced });
             }
