@@ -19,12 +19,12 @@ Aber
 **** DONE common mistakes
 **** TODO time limited e.g. most correct in 1 min
 
-*** 0.3 Import/Export data [0/1]
-**** TODO json or compressed/encrypted json
+*** 0.3 Import/Export data [1/1]
+**** DONE json or compressed/encrypted json
 **** evnt. remote server backup (P)
 
-*** 0.4 Dark theme [0/1]
-**** TODO add dark theme + setting toggleable
+*** 0.4 Dark theme [1/1]
+**** DONE add dark theme + setting toggleable
 
 *** 0.5 Feedback + Sentry [0/3]
 **** TODO Sentry support

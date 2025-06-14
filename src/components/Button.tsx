@@ -36,11 +36,6 @@ const useStyles = (position: Position | undefined, color?: ColorValue, borderCol
             paddingVertical: 8,
             paddingHorizontal: 16,
             color: theme.text,
-            textShadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            textShadowRadius: 2,
             fontWeight: 'bold',
         },
     });
