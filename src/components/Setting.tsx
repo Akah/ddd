@@ -4,7 +4,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { Header, Text } from './Text';
 import { Modal } from './Modal';
-import { Surface as DefaultSurface } from './Surface';
+import { Surface as DefaultSurface, SurfaceProps } from './Surface';
 import { Button as DefaultButton } from './Button';
 import DefaultSlider from '@react-native-community/slider';
 
@@ -167,11 +167,9 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     );
 }
 
-const Surface: React.FC<React.PropsWithChildren> = (props: React.PropsWithChildren) => {
+const Surface: React.FC<SurfaceProps & React.PropsWithChildren> = (props: SurfaceProps & React.PropsWithChildren) => {
     return (
-        <DefaultSurface>
-            {props.children}
-        </DefaultSurface>
+        <DefaultSurface {...props} />
     );
 }
 

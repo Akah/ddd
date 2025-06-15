@@ -47,3 +47,5 @@ android/
 !.yarn/versions
 
 .env
+
+.env.local

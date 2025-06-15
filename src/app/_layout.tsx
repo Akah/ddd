@@ -1,4 +1,5 @@
 import { PortalProvider } from '@gorhom/portal';
+import * as Sentry from '@sentry/react-native';
 import { Stack } from 'expo-router';
 import React from 'react';
 
@@ -6,6 +7,20 @@ import WordsJSON from '../../assets/words.json';
 import { database } from '../model/database';
 import { Gender, Words } from '../model/model';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+if (!__DEV__) {
+    /* Sentry.init({
+*     dsn: 'https://0ffe8e0b3b96cdb4d4301ed35d66ea2a@o4509496458608640.ingest.de.sentry.io/4509496464113744',
+*
+*     // Adds more context data to events (IP address, cookies, user, etc.)
+*     // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+*     sendDefaultPii: true,
+*     integrations: [Sentry.feedbackIntegration()],
+*
+*     // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+*     // spotlight: __DEV__,
+* }); */
+}
 
 const MASCULINE = [
     'ant',
@@ -101,7 +116,7 @@ function useInit(): void {
     }, []);
 }
 
-export default function PublicLayout() {
+function App() {
     useInit();
     return (
         <>
@@ -115,3 +130,7 @@ export default function PublicLayout() {
         </>
     );
 }
+
+// export default Sentry.wrap(App);
+
+export default App;

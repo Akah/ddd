@@ -3,7 +3,7 @@
         "name": "ddd",
         "slug": "ddd",
         "scheme": "ddd",
-        "version": "0.0.1",
+        "version": "0.4.0",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "automatic",
@@ -12,7 +12,9 @@
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
-        "assetBundlePatterns": ["**/*"],
+        "assetBundlePatterns": [
+            "**/*"
+        ],
         "ios": {
             "deploymentTarget": "15.5",
             "supportsTablet": true,
@@ -23,13 +25,19 @@
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "package": "com.akah.ddd"
+            "package": "com.akah.ddd",
+            "softwareKeyboardLayoutMode": "pan"
         },
         "web": {
             "favicon": "./assets/favicon.png"
         },
         "plugins": [
-            ["@morrowdigital/watermelondb-expo-plugin", { "disableJsi": true }],
+            [
+                "@morrowdigital/watermelondb-expo-plugin",
+                {
+                    "disableJsi": true
+                }
+            ],
             [
                 "expo-build-properties",
                 {
@@ -39,12 +47,22 @@
                     "android": {
                         "kotlinVersion": "1.6.10",
                         "packagingOptions": {
-                            "pickFirst": ["**/libc++_shared.so"]
+                            "pickFirst": [
+                                "**/libc++_shared.so"
+                            ]
                         }
                     }
                 }
             ],
-            "expo-router"
+            "expo-router",
+            [
+                "@sentry/react-native/expo",
+                {
+                    "url": "https://sentry.io/",
+                    "project": "react-native",
+                    "organization": "rwhitedev"
+                }
+            ]
         ]
     }
 }

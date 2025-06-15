@@ -5,16 +5,29 @@ import { StatusBar } from 'expo-status-bar';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { View, ScrollView, Platform, Appearance, ColorSchemeName } from 'react-native';
 
 import { zip, unzip } from 'react-native-zip-archive';
 
-import { version } from './../../../package.json';
-import { Settings, Words } from '../../model/model';
-import { database } from '../../model/database';
-import { Text } from '../../components/Text';
-import { Setting } from '../../components/Setting';
+import { version } from './../../../../package.json';
+import { Settings, Words } from '../../../model/model';
+import { database } from '../../../model/database';
+import { Text } from '../../../components/Text';
+import { Setting } from '../../../components/Setting';
+
+import * as Sentry from "@sentry/react-native";
+import { SendFeedbackParams } from "@sentry/react-native";
+
+function testFeedback(): void {
+    const userFeedback: SendFeedbackParams = {
+        name: "John Doe",
+        email: "john@doe.com",
+        message: "this is a test feedback message",
+    };
+    // Sentry.captureFeedback(userFeedback);
+}
 
 const settingsCollection = database.collections.get<Settings>('settings');
 const settingsQuery = settingsCollection.query()
@@ -254,6 +267,7 @@ function stringToColorSchemeName(str: string): ColorSchemeName {
 }
 
 const Component: React.FC<Props> = (props: Props) => {
+    const router = useRouter();
     const settings = props.settings;
 
     if (settings == null) {
@@ -292,7 +306,7 @@ const Component: React.FC<Props> = (props: Props) => {
                                 set={setTheme}
                             />
                         </Setting.Surface>
-                        <Setting.Button label="Feedback" />
+                        <Setting.Button label="Feedback" onPress={() => router.navigate('settings/feedback')} />
                     </Setting.Group>
 
                     <Setting.Group label="Notifications">
@@ -302,11 +316,11 @@ const Component: React.FC<Props> = (props: Props) => {
                                 value={settings.reminders}
                                 set={setReminders}
                             />
-                            { settings.reminders && <Setting.String
+                            {settings.reminders && <Setting.String
                                 label="Schedule reminder at"
                                 value={timeToString(settings.reminderTime)}
                                 options={[]}
-                                // set={setReminderTime}
+                            // set={setReminderTime}
                             />}
                         </Setting.Surface>
                     </Setting.Group>

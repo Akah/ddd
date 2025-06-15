@@ -26,7 +26,7 @@ const searchStyle = StyleSheet.create({
 });
 
 const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProps) => {
-    const style = useStyle();
+    const style = useLayoutStyle();
     return (
         <View
             style={[
@@ -49,10 +49,10 @@ const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProp
 export default function ProtectedLayout() {
     const insets = useSafeAreaInsets();
     const theme = useTheme();
-    const style = useStyle();
+    const style = useLayoutStyle();
     return (
         <Tabs
-            screenOptions={{ tabBarStyle: style.tabBar}}
+            screenOptions={{ tabBarStyle: style.tabBar, tabBarHideOnKeyboard: false }}
             sceneContainerStyle={{ backgroundColor: theme.wallpaper}}
         >
             <Tabs.Screen
@@ -99,6 +99,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='settings'
                 options={{
+                    headerShown: false,
                     title: 'Settings',
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
@@ -116,7 +117,7 @@ export default function ProtectedLayout() {
     );
 }
 
-const useStyle = () => {
+export const useLayoutStyle = () => {
     const theme = useTheme();
     return StyleSheet.create({
         header: {

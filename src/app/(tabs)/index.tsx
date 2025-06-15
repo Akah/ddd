@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-raw-text */
+import * as Sentry from '@sentry/react-native';
 import { PortalHost } from '@gorhom/portal';
 import { Q } from '@nozbe/watermelondb';
 import * as React from 'react';
@@ -129,10 +130,11 @@ export default function () {
         <>
             <PortalHost name="modal" />
             <View style={style.root}>
-                <Accuracy/>
+                <Accuracy />
                 <Button onPress={onOpen}>
                     start
                 </Button>
+                <Button onPress={() => { Sentry.captureException(new Error('First error')) }} >try sentry</Button>
                 <View style={{ width: '100%' }}>
                     <Setting.Surface>
                         <Setting.Slider
