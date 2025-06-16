@@ -133,6 +133,16 @@ const Component: React.FC<Props> = (props: Props) => {
         return (<Item word={info.item} index={info.index} length={props.words.length} />);
     }
 
+    if (props.words.length === 0) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>
+                    You currently have no favorites
+                </Text>
+            </View>
+        );
+    }
+
     return (
         <FlatList
             contentContainerStyle={style.list}
