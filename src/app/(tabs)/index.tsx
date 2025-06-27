@@ -11,6 +11,7 @@ import { Words } from '../../model/model';
 import { database } from '../../model/database';
 import { Setting } from '../../components/Setting';
 import { Accuracy } from '../../components/home/Accuracy';
+import { useTranslation } from 'react-i18next';
 
 async function getNextWord(list: Array<Words>, isRandom: boolean): Promise<Words> {
     const excludedIdsString = list.map((word) => `'${word.id}'`).join(',');
@@ -88,6 +89,7 @@ const style = StyleSheet.create({
 type QuizType = 'random' | 'mistakes' | 'favorites' | 'frequency';
 
 export default function () {
+    const { t } = useTranslation();
     const [open, setOpen] = React.useState(false);
     const [list, setList] = React.useState<Array<Words>>([]);
     const [wordsCount, setWordsCount] = React.useState<number>(10);
@@ -132,13 +134,13 @@ export default function () {
             <View style={style.root}>
                 <Accuracy />
                 <Button onPress={onOpen}>
-                    start
+                    {t('Start')}
                 </Button>
                 <Button onPress={() => { Sentry.captureException(new Error('First error')) }} >try sentry</Button>
                 <View style={{ width: '100%' }}>
                     <Setting.Surface>
                         <Setting.Slider
-                            label={`Number of words: ${wordsCount === Infinity ? 'Infinite' : wordsCount}`}
+                            label={`${t('Number of words')}: ${wordsCount === Infinity ? 'Infinite' : wordsCount}`}
                             value={wordsCount}
                             set={setSlider}
                             step={10}
@@ -149,13 +151,13 @@ export default function () {
                 </View>
                 <Setting.Surface>
                     <Setting.String
-                        label="Quiz type"
-                        value={quizType}
+                        label={t('Quiz type')}
+                        value={t(quizType)}
                         options={[
-                            { key: 'random', value: 'Random' },
-                            { key: 'mistakes', value: 'Common mistakes' },
-                            { key: 'favorites', value: 'Favorites' },
-                            { key: 'frequency', value: 'Frequency' },
+                            { key: 'random', value: t('random') },
+                            { key: 'mistakes', value: t('common mistakes') },
+                            { key: 'favorites', value: t('favorites') },
+                            { key: 'frequency', value: t('frequency') },
                         ]}
                         set={async (value: string) => setQuizType(value as QuizType)}
                     />

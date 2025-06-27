@@ -2,6 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Q } from '@nozbe/watermelondb';
 import { withObservables } from '@nozbe/watermelondb/react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, TouchableOpacity, ListRenderItemInfo } from 'react-native';
 
 import { database } from '../model/database';
@@ -129,6 +130,7 @@ const Item: React.FC<ItemProps> = (props: ItemProps) => {
 }
 
 const Component: React.FC<Props> = (props: Props) => {
+    const { t } = useTranslation();
     function renderItem(info: ListRenderItemInfo<Words>) {
         return (<Item word={info.item} index={info.index} length={props.words.length} />);
     }
@@ -137,7 +139,7 @@ const Component: React.FC<Props> = (props: Props) => {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>
-                    You currently have no favorites
+                    {t('You currently have no favorites')}
                 </Text>
             </View>
         );

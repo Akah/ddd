@@ -2,11 +2,14 @@ import { PortalProvider } from '@gorhom/portal';
 import * as Sentry from '@sentry/react-native';
 import { Stack } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
+import '../i18n';
 import WordsJSON from '../../assets/words.json';
 import { database } from '../model/database';
-import { Gender, Words } from '../model/model';
+import { Gender, Settings, Words } from '../model/model';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import i18next from 'i18next';
 
 if (!__DEV__) {
     Sentry.init({
@@ -75,7 +78,6 @@ function toGender(gender: string): Gender {
 
 function getWordEnding(word: string, endings: Array<string>): string | null {
     for (let ending of endings) {
-        // console.log(ending);
         if (word.endsWith(ending)) {
             return ending;
         }
@@ -83,10 +85,22 @@ function getWordEnding(word: string, endings: Array<string>): string | null {
     return null;
 }
 
-function useInit(): void {
-    const wordsCollection = database.collections.get<Words>('words');
+const code = {
+    'german': 'de',
+    'english': 'en',
+    'french': 'fr',
+    'russian': 'ru',
+};
 
+function useInit(): void {
+    const { i18n } = useTranslation();
+    const wordsCollection = database.collections.get<Words>('words');
+    const settingsCollection = database.collections.get<Settings>('settings');
     React.useEffect(() => {
+        void settingsCollection.query().fetch().then((result) => {
+            const language = result[0].language;
+            i18n.changeLanguage(code[language]);
+        });
         (async () => {
             const length = await wordsCollection.query().count;
             if (length) {

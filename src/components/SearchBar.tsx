@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useDebounceValue } from 'usehooks-ts';
 import { useTheme } from '../colors';
+import { useTranslation } from 'react-i18next';
 
 const style = StyleSheet.create({
     root: {
@@ -30,6 +31,7 @@ const style = StyleSheet.create({
 });
 
 export const SearchBar: React.FC = () => {
+    const { t } = useTranslation();
     const theme = useTheme();
     const [value, setValue] = React.useState('');
     const [debounced, setDebounced] = useDebounceValue('', 300);
@@ -59,7 +61,7 @@ export const SearchBar: React.FC = () => {
         <View style={[style.root, {backgroundColor: theme.background, borderColor: theme.border}]}>
             <MaterialIcons name='search' size={24} color={theme.text} />
             <TextInput
-                placeholder='Search words...'
+                placeholder={t('Search words') + '...'}
                 placeholderTextColor={theme.text} // TODO: different color?
                 style={[style.input, { color: theme.text }]}
                 value={value}

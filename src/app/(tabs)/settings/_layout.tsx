@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useLayoutStyle } from '../_layout';
 import { useTheme } from '../../../colors';
+import { useTranslation } from 'react-i18next';
 
 const CustomHeader = (props: any) => {
     const style = useLayoutStyle();
@@ -33,13 +34,14 @@ const CustomHeader = (props: any) => {
 };
 
 export default function Layout() {
+    const { t } = useTranslation();
     return (
         <Stack>
             <Stack.Screen
                 name="index"
                 options={{
                     presentation: undefined,
-                    title: 'Settings',
+                    title: t('Settings'),
                     header: CustomHeader,
                 }}
             />
@@ -47,7 +49,7 @@ export default function Layout() {
                 name="feedback"
                 options={{
                     presentation: 'modal',
-                    title: 'Feedback',
+                    title: t('Feedback'),
                     header: CustomHeader,
                 }}
             />

@@ -26,18 +26,19 @@ Aber
 *** 0.4 Dark theme [1/1]
 **** DONE add dark theme + setting toggleable
 
-*** 0.5 Feedback + Sentry [0/3]
-**** TODO Sentry support
+*** 0.5 Feedback + Sentry [2/3]
+**** DONE Sentry support
 **** TODO Cookiebanner for sentry usage
-**** TODO feedback button via sentry
+**** DONE feedback button via sentry
 
-*** 0.6 Animations
-*** 0.7 Translations [0/5]
-**** TODO German
+*** 0.6 Translations [1/5]
+**** DONE German
 **** TODO Russian
 **** TODO Chinese
 **** TODO French?
 **** TODO Rest: computer generated?
+
+*** 0.7 Animations
 *** 0.8 Dashboard [0/2]
 **** TODO habbit streak/history
 **** TODO accuracy

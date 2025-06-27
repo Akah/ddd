@@ -6,7 +6,9 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
+import i18next from 'i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, ScrollView, Platform, Appearance, ColorSchemeName } from 'react-native';
 
 import { zip, unzip } from 'react-native-zip-archive';
@@ -19,6 +21,7 @@ import { Setting } from '../../../components/Setting';
 
 import * as Sentry from "@sentry/react-native";
 import { SendFeedbackParams } from "@sentry/react-native";
+import { useTheme } from '../../../colors';
 
 function testFeedback(): void {
     const userFeedback: SendFeedbackParams = {
@@ -87,23 +90,24 @@ const languages = [{
 
 const themes = [{
     key: 'auto',
-    value: 'auto',
+    value: i18next.t('auto'),
 }, {
     key: 'dark',
-    value: 'dark',
+    value: i18next.t('dark'),
 }, {
     key: 'light',
-    value: 'light',
+    value: i18next.t('light'),
 }];
 
 
-function makeSetter<T>(settings: Settings, key: keyof Settings): (value: T) => Promise<void> {
+function makeSetter<T>(settings: Settings, key: keyof Settings, callback?: (value: T) => void): (value: T) => Promise<void> {
     return async (value: T) => {
         await database.write(async () => {
             await settings!.update((setting: Settings) => {
                 setting[key] = value;
             });
         });
+        callback?.(value);
     }
 }
 
@@ -267,6 +271,7 @@ function stringToColorSchemeName(str: string): ColorSchemeName {
 }
 
 const Component: React.FC<Props> = (props: Props) => {
+    const { t } = useTranslation();
     const router = useRouter();
     const settings = props.settings;
 
@@ -274,13 +279,23 @@ const Component: React.FC<Props> = (props: Props) => {
         return null;
     }
 
-    const setLanguage = makeSetter<string>(settings, 'language');
+    const setLanguage = makeSetter<string>(settings, 'language', (language: string) => {
+        const code = {
+            'german': 'de',
+            'english': 'en',
+            'french': 'fr',
+            'russian': 'ru',
+        }
+        i18next.changeLanguage(code[language] as string);
+    });
     const setThemeDB = makeSetter<string>(settings, 'theme');
     const setReminders = makeSetter<boolean>(settings, 'reminders');
     // const setReminderTime = makeSetter<number>(settings, 'reminderTime');
     const setAnimations = makeSetter<boolean>(settings, 'animations');
     const setSound = makeSetter<boolean>(settings, 'sound');
     const setHaptic = makeSetter<boolean>(settings, 'haptic');
+
+    const theme = useTheme();
 
     const setTheme = (value: string) => {
         setThemeDB(value);
@@ -289,30 +304,30 @@ const Component: React.FC<Props> = (props: Props) => {
 
     return (
         <>
-            <ScrollView style={{ paddingHorizontal: 16 }}>
+            <ScrollView style={{ paddingHorizontal: 16, backgroundColor: theme.wallpaper }}>
                 <View style={{ paddingVertical: 16 }}>
-                    <Setting.Group label="Misc">
+                    <Setting.Group label={t('Misc')}>
                         <Setting.Surface>
                             <Setting.String
-                                label="Language"
+                                label={t('Language')}
                                 value={settings.language}
                                 options={languages}
                                 set={setLanguage}
                             />
                             <Setting.String
-                                label="Theme"
-                                value={settings.theme}
+                                label={t('Theme')}
+                                value={t(settings.theme)}
                                 options={themes}
                                 set={setTheme}
                             />
                         </Setting.Surface>
-                        <Setting.Button label="Feedback" onPress={() => router.navigate('settings/feedback')} />
+                        <Setting.Button label={t('Feedback')} onPress={() => router.navigate('settings/feedback')} />
                     </Setting.Group>
 
-                    <Setting.Group label="Notifications">
+                    <Setting.Group label={t('Notifications')}>
                         <Setting.Surface>
                             <Setting.Boolean
-                                label="Send reminders"
+                                label={t('Send reminders')}
                                 value={settings.reminders}
                                 set={setReminders}
                             />
@@ -325,36 +340,36 @@ const Component: React.FC<Props> = (props: Props) => {
                         </Setting.Surface>
                     </Setting.Group>
 
-                    <Setting.Group label="Accessibility">
+                    <Setting.Group label={t('Accessibility')}>
                         <Setting.Surface>
                             <Setting.Boolean
-                                label="Animations"
+                                label={t('Animations')}
                                 value={settings.animations}
                                 set={setAnimations}
                             />
                             <Setting.Boolean
-                                label="Sound effects"
+                                label={t('Sound effects')}
                                 value={settings.sound}
                                 set={setSound}
                             />
                             <Setting.Boolean
-                                label="Haptic feedback"
+                                label={t('Haptic feedback')}
                                 value={settings.haptic}
                                 set={setHaptic}
                             />
                         </Setting.Surface>
                     </Setting.Group>
 
-                    <Setting.Group label="Privacy">
-                        <Setting.Button label="Terms of use" />
-                        <Setting.Button label="Advertisements" />
-                        <Setting.Button label="Acknowledgements" />
+                    <Setting.Group label={t('Privacy')}>
+                        <Setting.Button label={t('Terms of use')} />
+                        <Setting.Button label={t('Advertisements')} />
+                        <Setting.Button label={t('Acknowledgements')} />
                     </Setting.Group>
 
-                    <Setting.Group label="Data">
-                        <Setting.Button label="Import Data" onPress={importData} />
-                        <Setting.Button label="Export Data" onPress={exportData} />
-                        <Setting.Button label="Delete Data" onPress={resetSettings} />
+                    <Setting.Group label={t('Data')}>
+                        <Setting.Button label={t('Import data')} onPress={importData} />
+                        <Setting.Button label={t('Export data')} onPress={exportData} />
+                        <Setting.Button label={t('Delete data')} onPress={resetSettings} />
                     </Setting.Group>
 
                     <Text style={{ alignSelf: 'center' }}>{`Version: ${version}`}</Text>

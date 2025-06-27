@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SearchBar } from '../../components/SearchBar';
 import { useTheme } from '../../colors';
+import { useTranslation } from 'react-i18next';
 
 const searchStyle = StyleSheet.create({
     root: {
@@ -36,7 +37,7 @@ const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProp
             ]}
         >
             <View style={searchStyle.title}>
-                <Text style={style.text}>Search</Text>
+                <Text style={style.text}>{props.options.title}</Text>
                 <View style={searchStyle.search}>
                     <MaterialIcons name='filter-list' size={24} color='grey' />
                 </View>
@@ -47,6 +48,7 @@ const SearchHeader: React.FC<BottomTabHeaderProps> = (props: BottomTabHeaderProp
 };
 
 export default function ProtectedLayout() {
+    const { t } = useTranslation();
     const insets = useSafeAreaInsets();
     const theme = useTheme();
     const style = useLayoutStyle();
@@ -58,7 +60,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='search'
                 options={{
-                    title: 'Search',
+                    title: t('Search'),
                     header: (headerOptions) => <SearchHeader {...headerOptions}/>,
                     headerStyle: { ...style.header, paddingTop: insets.top },
                     headerTitleStyle: style.text,
@@ -71,7 +73,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='favorites'
                 options={{
-                    title: 'Favorites',
+                    title: t('Favorites'),
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
                     tabBarShowLabel: false,
@@ -87,7 +89,7 @@ export default function ProtectedLayout() {
             <Tabs.Screen
                 name='index'
                 options={{
-                    title: 'Home',
+                    title: t('Home'),
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
                     tabBarShowLabel: false,
@@ -100,7 +102,7 @@ export default function ProtectedLayout() {
                 name='settings'
                 options={{
                     headerShown: false,
-                    title: 'Settings',
+                    title: t('Settings'),
                     headerStyle: style.header,
                     headerTitleStyle: style.text,
                     tabBarShowLabel: false,
